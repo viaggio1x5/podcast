@@ -1,0 +1,22 @@
+:root { --accent: #e05a2b; --bg: #fafaf7; --text: #1a1a1a; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Georgia, serif; background: var(--bg); color: var(--text);
+       max-width: 720px; margin: 0 auto; padding: 1rem 1.5rem; line-height: 1.7; }
+header { padding: 1.5rem 0; border-bottom: 2px solid var(--accent); margin-bottom: 2rem; }
+header h1 { font-size: 2rem; color: var(--accent); }
+a { color: var(--accent); }
+.ep-list { list-style: none; }
+.ep-list li { padding: .6rem 0; border-bottom: 1px solid #ddd; display: flex;
+              justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.date { font-size: .85rem; color: #777; }
+.badge { font-size: .8rem; }
+.ep-cover { width: 100%; max-width: 300px; border-radius: 8px; margin-bottom: 1rem; }
+h1 { font-size: 1.6rem; margin-bottom: .5rem; }
+.description { margin: 1rem 0; }
+audio { width: 100%; margin: 1rem 0; }
+.transcript { background: #f0ede8; padding: 1.2rem; border-radius: 8px; margin-top: 2rem; }
+.transcript h2 { margin-bottom: .8rem; font-size: 1.1rem; }
+.transcript p { font-size: .95rem; }
+.ep-nav { display: flex; justify-content: space-between; padding: 1rem 0;
+          border-top: 1px solid #ddd; margin-top: 2rem; flex-wrap: wrap; gap: .5rem; }
+footer { text-align: center; padding: 2rem 0; font-size: .85rem; color: #999; }
