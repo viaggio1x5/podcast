@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  {# SEO: each page sets its own title/description via front matter #}
+  <title>{{ pageTitle if pageTitle else title }} — Viaggio a 1.5x</title>
+  <meta name="description" content="{{ pageDescription if pageDescription else podcast.description | truncate(160) }}" />
+
+  {# Open Graph — for sharing on social media #}
+  <meta property="og:type" content="{{ 'music.radio_station' if not audioUrl else 'music.song' }}" />
+  <meta property="og:title" content="{{ pageTitle if pageTitle else title }}" />
+  <meta property="og:description" content="{{ pageDescription if pageDescription else podcast.description | truncate(160) }}" />
+  <meta property="og:image" content="{{ image if image else podcast.image }}" />
+  <meta property="og:locale" content="it_IT" />
+
+  {# Podcast structured data (JSON-LD) — helps Google index episodes #}
+  {% if audioUrl %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "PodcastEpisode",
+    "name": {{ title | dump | safe }},
+    "description": {{ description | dump | safe }},
+    "datePublished": "{{ pubDate }}",
+    "audio": {
+      "@type": "AudioObject",
+      "contentUrl": "{{ audioUrl }}"
+    },
+    "partOfSeries": {
+      "@type": "PodcastSeries",
+      "name": "Viaggio a 1.5x — dal Brasile a Berlino",
+      "author": {
+        "@type": "Person",
+        "name": "Caterina Finelli"
+      }
+    }
+  }
+  </script>
+  {% else %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "PodcastSeries",
+    "name": "Viaggio a 1.5x — dal Brasile a Berlino",
+    "description": {{ podcast.description | dump | safe }},
+    "author": {
+      "@type": "Person",
+      "name": "Caterina Finelli"
+    },
+    "image": "{{ podcast.image }}"
+  }
+  </script>
+  {% endif %}
+
+  <link rel="canonical" href="https://viaggio1x5.github.io/podcast{{ page.url }}" />
+  <link rel="alternate" type="application/rss+xml" title="Viaggio a 1.5x RSS" href="https://www.spreaker.com/show/6107009/episodes/feed" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <span class="header-label">Podcast · Italia</span>
+    <a href="/" class="site-logo">Viaggio a <span>1.5x</span></a>
+    <span class="header-label header-label--right">di Caterina Finelli</span>
+  </header>
+
+  {{ content | safe }}
+
+  <footer class="site-footer">
+    <div class="footer-brand">Viaggio a 1.5x</div>
+    <nav class="footer-nav" aria-label="Footer">
+      <a href="https://instagram.com/viaggio1x5" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://linktr.ee/viaggio1x5" target="_blank" rel="noopener">Contatti</a>
+      <a href="https://www.spreaker.com/podcast/viaggio-a-1-5x-dal-brasile-a-berlino--6107009" target="_blank" rel="noopener">Spreaker</a>
+    </nav>
+  </footer>
+
+</body>
+</html>
