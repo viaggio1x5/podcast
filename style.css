@@ -471,6 +471,7 @@ main > h1 {
 
 /* Hidden audio element */
 #ep-audio { display: none; }
+#ep-mini-audio { display: block; width: 100%; height: 32px; accent-color: #3b82f6; }
 
 main > .date {
   display: block;

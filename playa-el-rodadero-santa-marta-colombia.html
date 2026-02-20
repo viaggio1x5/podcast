@@ -64,21 +64,22 @@
     </div>
   </footer>
   </div>
-    <audio id="ep-audio" controls></audio>
-  </div>
   <div class="mini-player" id="ep-mini-player">
     <div class="mini-player__info">
+      <span class="mini-player__title" id="ep-mini-title"></span>
       <button class="mini-player__close" id="ep-mini-close">&#x2715;</button>
     </div>
-    <audio id="ep-audio" controls></audio>
+    <audio id="ep-mini-audio" controls></audio>
   </div>
   <script>
   (function() {
     var player   = document.getElementById('ep-mini-player');
-    var audio    = document.getElementById('ep-audio');
+    var audio    = document.getElementById('ep-mini-audio');
     var closeBtn = document.getElementById('ep-mini-close');
+    var titleEl  = document.getElementById('ep-mini-title');
 
     if (audio) audio.src = "https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/59245117/playarodadero.mp3";
+    if (titleEl) titleEl.textContent = document.querySelector("h1") ? document.querySelector("h1").textContent.trim() : document.title.split("—")[0].trim();
     if (player) setTimeout(function(){ player.classList.add('visible'); }, 100);
     if (audio)  setTimeout(function(){ audio.play().catch(function(){}); }, 3000);
 
