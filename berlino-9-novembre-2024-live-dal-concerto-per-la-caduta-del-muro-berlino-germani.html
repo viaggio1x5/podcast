@@ -9,22 +9,100 @@
   <meta property="og:title" content="Berlino, 9 Novembre 2024: Live dal Concerto per la Caduta del Muro. Berlino, Germania.">
   <meta property="og:description" content="Cosa fare la notte del 9 Novembre a Berlino? Ovviamente scendere in strada!   E stavolta andiamo fino alla Porta di Brandeburgo per il Festival for Freedom, il concertone che celebra i 35 anni dalla c">
   <meta property='og:image' content='https://d3wo5wojvuv7l.cloudfront.net/t_rss_itunes_square_1400/images.spreaker.com/original/7b2f765c5674de59f134fdf6955e0de9.jpg'>
-  <link rel="canonical" href="https://viaggio1x5.github.io/podcast/berlino-9-novembre-2024-live-dal-concerto-per-la-caduta-del-muro-berlino-germani.html">
+  <link rel="canonical" href="https://cheviaggio.net/berlino-9-novembre-2024-live-dal-concerto-per-la-caduta-del-muro-berlino-germani.html">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <a href="index.html">← Viaggio a 1.5x</a>
+  <header class="ep-header">
+    <a href="index.html" class="ep-back">← Viaggio a 1.5x</a>
+    <a href="https://linktr.ee/viaggio1x5" target="_blank" rel="noopener" class="ep-about">About</a>
   </header>
   <main>
     <img src='https://d3wo5wojvuv7l.cloudfront.net/t_rss_itunes_square_1400/images.spreaker.com/original/7b2f765c5674de59f134fdf6955e0de9.jpg' alt='Berlino, 9 Novembre 2024: Live dal Concerto per la Caduta del Muro. Berlino, Germania.' class='ep-cover'>
     <h1>Berlino, 9 Novembre 2024: Live dal Concerto per la Caduta del Muro. Berlino, Germania.</h1>
     <p class="date">Sun, 10 Nov 2024</p>
     <div class="description">Cosa fare la notte del 9 Novembre a Berlino? Ovviamente scendere in strada! <br /><br />E stavolta andiamo fino alla Porta di Brandeburgo per il Festival for Freedom, il concertone che celebra i 35 anni dalla caduta del Muro che fino al 1989 divideva le due Berlino. <br />La città ha scelto di celebrarlo con la “Band for Freedom”, l'ensamble di 700 persone che ha suonato simultaneamente la musica di David Bowie, Patti Smith, Depeche Mode e Neil Young.<br />Si è gelato parecchio, ma ne è valsa la pena. <br /><br />🇩🇪 ⁠⁠⁠Marie-Elisabeth-Lüders-Haus, Checkpoint Charlie, Brandenburg Gate. Berlino, Germania<br /><br />🟣 Mi trovi su <a href="https://www.instagram.com/viaggio1x5/" target="_blank" rel="noreferrer noopener">⁠@viaggio1x5 ⁠</a><br />🟢 Mappe &amp; Contatti: <a href="https://linktr.ee/viaggio1x5" target="_blank" rel="noreferrer noopener">⁠⁠https://linktr.ee/viaggio1x5⁠</a> <a href="https://linktr.ee/viaggio1x5" target="_blank" rel="noreferrer noopener">⁠⁠⁠</a><br /><br />#35mauerfall #berlino #vivereingermania #podcastitaliano #mauerfall35 #haltetdiefreiheithoch #vitadaexpat #rockin1000 #vivereaberlino</div>
-    <audio controls src='https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/62679876/3_novenovembre.mp3'></audio>
     
+  
+  <div class="ep-map-bubble" title="Apri mappa" id="map-bubble"><div class="ep-map-bubble__icon">🗺</div></div>
   </main>
-  <nav class="ep-nav"><a href="un-anno-a-berlino-la-germania-vista-da-mara-gergolet-corrispondente-del-corriere.html">← Un anno a Berlino: la Germania vista da Mara Gergolet, corri</a> <a href="visitare-berlino-autentica-intervista-a-marta-nuzzo-di-berlin-kombinat-tours.html">Visitare Berlino Autentica: intervista a Marta Nuzzo di Berl →</a></nav>
-  <footer><a href="index.html">Viaggio a 1.5x</a></footer>
+  <nav class="ep-carousel-nav">
+    <div class="ep-carousel-nav__track">
+      <a href="un-anno-a-berlino-la-germania-vista-da-mara-gergolet-corrispondente-del-corriere.html" class="ep-carousel-card">
+        <span class="ep-carousel-card__dir">Puntata precedente</span>
+        <span class="ep-carousel-card__title">Un anno a Berlino: la Germania vista da Mara Gergolet, corri</span>
+      </a>
+      <a href="visitare-berlino-autentica-intervista-a-marta-nuzzo-di-berlin-kombinat-tours.html" class="ep-carousel-card">
+        <span class="ep-carousel-card__dir">Prossima puntata</span>
+        <span class="ep-carousel-card__title">Visitare Berlino Autentica: intervista a Marta Nuzzo di Berl</span>
+      </a>
+    </div>
+  </nav>
+    <footer class="site-footer-ep">
+    <span class="footer-copy">Viaggio a 1.5x — un podcast di Caterina Finelli &copy; 2026</span>
+    <a href="https://linktr.ee/viaggio1x5" target="_blank" rel="noopener" class="footer-about">About</a>
+  </footer>
+  <div id="map-modal" class="map-modal">
+    <div class="map-modal__inner">
+      <button id="map-modal-close" class="map-modal__close" aria-label="Chiudi">&times;</button>
+      <iframe src="https://www.google.com/maps/d/embed?mid=1INrkQUKsl6vUpRNEFGYzstTcYDN7KR8&ll=47.11977157332829,10.717340199999995&z=5" width="100%" height="100%" frameborder="0" style="border:0" allowfullscreen loading="lazy"></iframe>
+    </div>
+  </div>
+  </div>
+  <div class="mini-player" id="ep-mini-player">
+    <div class="mini-player__info">
+      <span class="mini-player__title" id="ep-mini-title"></span>
+      <button class="mini-player__close" id="ep-mini-close">&#x2715;</button>
+    </div>
+    <audio id="ep-audio" controls></audio>
+  </div>
+  <script>
+  (function() {
+    var player  = document.getElementById('ep-mini-player');
+    var audio   = document.getElementById('ep-audio');
+    var titleEl = document.getElementById('ep-mini-title');
+    var closeBtn= document.getElementById('ep-mini-close');
+
+    if (titleEl) titleEl.textContent = "Berlino, 9 Novembre 2024: Live dal Concerto per la Caduta del Muro. Berlino, Germania.";
+    if (audio)   audio.src           = "https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/62679876/3_novenovembre.mp3";
+
+    if (player) setTimeout(function(){ player.classList.add('visible'); }, 100);
+    if (audio)  setTimeout(function(){ audio.play().catch(function(){}); }, 3000);
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+        if (audio) audio.pause();
+        if (player) player.classList.remove('visible');
+      });
+    }
+
+    var bubble    = document.querySelector('.ep-map-bubble');
+    var modal     = document.getElementById('map-modal');
+    var modalClose= document.getElementById('map-modal-close');
+    if (bubble && modal) {
+      bubble.addEventListener('click', function(){ modal.classList.add('open'); });
+      if (modalClose) modalClose.addEventListener('click', function(){ modal.classList.remove('open'); });
+      modal.addEventListener('click', function(e){ if (e.target===modal) modal.classList.remove('open'); });
+    }
+
+    function linkify(node) {
+      if (node.nodeType===3 && /https?:\/\//.test(node.textContent)) {
+        var frag = document.createDocumentFragment();
+        node.textContent.split(/(https?:\/\/[^\s<]+)/g).forEach(function(p) {
+          if (/^https?:\/\//.test(p)) {
+            var a=document.createElement('a'); a.href=p; a.textContent=p;
+            a.target='_blank'; a.rel='noopener'; a.className='ep-link';
+            frag.appendChild(a);
+          } else { frag.appendChild(document.createTextNode(p)); }
+        });
+        node.parentNode.replaceChild(frag, node);
+      } else if (node.nodeType===1 && node.nodeName!=='A' && node.nodeName!=='SCRIPT') {
+        Array.from(node.childNodes).forEach(linkify);
+      }
+    }
+    var desc = document.querySelector('.description');
+    if (desc) linkify(desc);
+  })();
+  </script>
 </body>
 </html>
