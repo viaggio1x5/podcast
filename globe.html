@@ -2,10 +2,9 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Viaggio a 1.5x — Esplora il Mondo</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -16,18 +15,16 @@
       --muted: #6b7fa3;
       --accent: #3b82f6;
       --accent-glow: rgba(59,130,246,0.3);
-      --font: 'Manrope', sans-serif;
-      --pad: clamp(1.2rem, 4vw, 3rem);
+      --pad: clamp(1rem, 4vw, 3rem);
     }
     html { font-size: 16px; overflow-x: hidden; }
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: var(--font);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden;
     }
 
     /* HEADER */
@@ -39,237 +36,123 @@
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
-      background: rgba(10,14,26,0.92);
+      background: rgba(10,14,26,0.97);
       backdrop-filter: blur(12px);
-      z-index: 50;
+      z-index: 1000;
     }
-    .site-header__logo {
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--muted);
-      letter-spacing: -0.01em;
-    }
-    .site-header__logo strong { color: var(--text); font-weight: 800; }
-    .site-header__nav {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
+    .site-header__logo { font-size: 1rem; font-weight: 400; color: var(--muted); }
+    .site-header__logo strong { color: var(--text); font-weight: 700; }
+    .site-header__nav { display: flex; align-items: center; gap: 0.75rem; }
     .site-header__nav a {
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--muted);
-      text-decoration: none;
-      border: 1.5px solid var(--border);
-      border-radius: 20px;
-      padding: 0.35rem 0.9rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      font-size: 0.72rem; font-weight: 600; color: var(--muted);
+      text-decoration: none; border: 1.5px solid var(--border);
+      border-radius: 20px; padding: 0.35rem 0.9rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
       transition: border-color 0.15s, color 0.15s;
     }
     .site-header__nav a:hover { border-color: var(--accent); color: var(--text); }
-    .nav-globe-btn {
-      width: 34px; height: 34px;
-      border: 1.5px solid var(--border) !important;
-      border-radius: 50% !important;
-      padding: 0 !important;
-      display: flex !important;
-      align-items: center;
-      justify-content: center;
-      color: var(--accent) !important;
-      border-color: var(--accent) !important;
-    }
-    .nav-globe-btn svg { width: 16px; height: 16px; }
 
     /* HERO */
-    .hero {
-      text-align: center;
-      padding: 2rem var(--pad) 0;
-    }
+    .hero { text-align: center; padding: 1.4rem var(--pad) 0.6rem; }
     .hero__title {
-      font-size: clamp(1.6rem, 5vw, 2.8rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      background: linear-gradient(135deg, #f0f4ff 0%, #93c5fd 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 0.4rem;
+      font-size: clamp(1.4rem, 5vw, 2.4rem);
+      font-weight: 700; letter-spacing: -0.03em; color: var(--text); margin-bottom: 0.25rem;
     }
-    .hero__sub {
-      font-size: 0.8rem;
-      color: var(--muted);
-      font-weight: 500;
-      letter-spacing: 0.05em;
-    }
+    .hero__sub { font-size: 0.75rem; color: var(--muted); letter-spacing: 0.04em; }
 
-    /* GLOBE CONTAINER */
-    #globe-wrap {
-      position: relative;
+    /* MAP */
+    #map {
       width: 100%;
-      max-width: 440px;
-      height: clamp(300px, 55vw, 440px);
-      margin: 0 auto;
-      cursor: grab;
+      height: clamp(260px, 45vw, 420px);
+      z-index: 1;
+      /* Invert toner tiles to dark mode */
+      filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(1.1);
     }
-    #globe-wrap:active { cursor: grabbing; }
-    #globe-canvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      display: block;
+    /* But keep our pins un-inverted */
+    #map .leaflet-marker-pane,
+    #map .leaflet-shadow-pane,
+    #map .leaflet-popup-pane {
+      filter: invert(1) hue-rotate(180deg);
     }
+    /* Leaflet attribution minimal */
+    .leaflet-control-attribution {
+      font-size: 0.55rem !important;
+      background: rgba(0,0,0,0.5) !important;
+      color: #888 !important;
+    }
+    .leaflet-control-attribution a { color: #aaa !important; }
+    /* Hide zoom controls — keep map non-zoomable on mobile */
+    .leaflet-control-zoom { display: none; }
 
-    /* ACTIVE PIN LABEL */
-    #pin-label {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      text-align: center;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    #pin-label.visible { opacity: 1; }
-    #pin-label .label-name {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: #fff;
-      text-shadow: 0 2px 20px rgba(59,130,246,0.8);
-      letter-spacing: -0.02em;
-    }
-    #pin-label .label-count {
-      font-size: 0.7rem;
-      color: var(--accent);
-      font-weight: 600;
-      letter-spacing: 0.05em;
-    }
-
-    /* HINT */
-    .globe-hint {
-      text-align: center;
-      font-size: 0.7rem;
-      color: var(--muted);
-      margin-bottom: 1.5rem;
-      letter-spacing: 0.03em;
+    .map-hint {
+      text-align: center; font-size: 0.68rem; color: var(--muted);
+      padding: 0.45rem 0 0.6rem; letter-spacing: 0.04em;
     }
 
     /* ACTIVE FILTER BADGE */
     #active-filter {
-      display: none;
-      align-items: center;
-      gap: 0.5rem;
+      display: none; align-items: center; gap: 0.5rem;
       margin: 0 var(--pad) 1rem;
-      background: var(--accent-glow);
-      border: 1px solid var(--accent);
-      border-radius: 30px;
-      padding: 0.4rem 1rem;
-      width: fit-content;
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: var(--accent);
-      cursor: pointer;
+      background: var(--accent-glow); border: 1px solid var(--accent);
+      border-radius: 30px; padding: 0.4rem 1rem;
+      width: fit-content; font-size: 0.78rem; font-weight: 600;
+      color: var(--accent); cursor: pointer;
     }
     #active-filter.visible { display: flex; }
     #active-filter .clear { opacity: 0.6; font-size: 0.9rem; }
 
     /* SORT */
     .list-controls {
-      display: flex;
-      align-items: center;
-      padding: 0.6rem var(--pad);
-      border-top: 1px solid var(--border);
-      gap: 0.75rem;
+      display: flex; align-items: center;
+      padding: 0.6rem var(--pad); border-top: 1px solid var(--border); gap: 0.75rem;
     }
     .sort-btn {
-      width: 36px; height: 36px;
-      border: 1.5px solid var(--border);
-      border-radius: 50%;
-      background: none;
-      cursor: pointer;
+      width: 36px; height: 36px; border: 1.5px solid var(--border);
+      border-radius: 50%; background: none; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      color: var(--muted);
-      transition: border-color 0.15s, color 0.15s;
-      flex-shrink: 0;
+      color: var(--muted); transition: border-color 0.15s, color 0.15s; flex-shrink: 0;
     }
     .sort-btn:hover { border-color: var(--accent); color: var(--accent); }
     #sort-icon { transition: transform 0.3s; }
 
     /* EPISODE LIST */
     main { flex: 1; }
-    .ep-list {
-      list-style: none;
-      border-top: 1px solid var(--border);
-    }
+    .ep-list { list-style: none; border-top: 1px solid var(--border); }
     .ep-list li {
-      border-bottom: 1px solid var(--border);
-      padding: 1rem var(--pad);
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-      transition: background 0.15s;
+      border-bottom: 1px solid var(--border); padding: 1rem var(--pad);
+      display: flex; flex-direction: column; gap: 0.25rem; transition: background 0.15s;
     }
     .ep-list li:hover { background: var(--card); }
     .ep-list .date {
-      font-size: 0.65rem;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.09em;
+      font-size: 0.65rem; font-weight: 600; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.09em;
     }
     .ep-list a {
-      font-size: 0.97rem;
-      font-weight: 700;
-      color: var(--text);
-      text-decoration: none;
-      line-height: 1.35;
-      letter-spacing: -0.01em;
+      font-size: 0.97rem; font-weight: 600; color: var(--text);
+      text-decoration: none; line-height: 1.35; letter-spacing: -0.01em;
       transition: color 0.15s;
     }
     .ep-list a:hover { color: var(--accent); }
-    .ep-list .badge {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-      flex-shrink: 0;
-      display: none;
-    }
-    .no-results {
-      text-align: center;
-      padding: 3rem var(--pad);
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
+    .ep-list .badge { display: none; }
+    .no-results { text-align: center; padding: 3rem var(--pad); color: var(--muted); font-size: 0.9rem; }
 
     /* FOOTER */
     .ep-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.3rem var(--pad);
-      border-top: 1px solid var(--border);
-      gap: 1.5rem;
-      flex-wrap: wrap;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.3rem var(--pad); border-top: 1px solid var(--border);
+      gap: 1.5rem; flex-wrap: wrap;
     }
     .ep-footer__copy { display: flex; flex-direction: column; gap: 0.15rem; }
-    .ep-footer__copy strong { font-size: 0.82rem; font-weight: 800; color: var(--text); }
-    .ep-footer__copy span { font-size: 0.65rem; color: var(--muted); font-weight: 500; }
+    .ep-footer__copy strong { font-size: 0.82rem; font-weight: 700; color: var(--text); }
+    .ep-footer__copy span { font-size: 0.65rem; color: var(--muted); }
     .ep-footer__social { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; }
     .ep-social-link {
-      width: 34px; height: 34px;
-      border: 1.5px solid var(--border);
-      border-radius: 50%;
+      width: 34px; height: 34px; border: 1.5px solid var(--border); border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      color: var(--muted);
-      text-decoration: none;
-      transition: color 0.15s, border-color 0.15s;
+      color: var(--muted); text-decoration: none; transition: color 0.15s, border-color 0.15s;
     }
     .ep-social-link svg { width: 14px; height: 14px; fill: currentColor; }
     .ep-social-link:hover { color: var(--accent); border-color: var(--accent); }
-
     @media (max-width: 640px) {
       .ep-footer { flex-direction: column; align-items: flex-start; gap: 1rem; }
     }
@@ -287,32 +170,26 @@
 
   <section class="hero">
     <h1 class="hero__title">Dove vorresti andare?</h1>
-    <p class="hero__sub">Ruota il globo e clicca su una destinazione</p>
+    <p class="hero__sub">Tocca un pin per filtrare gli episodi</p>
   </section>
 
-  <div id="globe-wrap">
-    <canvas id="globe-canvas"></canvas>
-    <div id="pin-label">
-      <div class="label-name" id="label-name"></div>
-      <div class="label-count" id="label-count"></div>
-    </div>
-  </div>
-
-  <p class="globe-hint">↑ trascina per ruotare · clicca per filtrare</p>
+  <div id="map"></div>
+  <p class="map-hint">tocca un pin colorato per filtrare &nbsp;·&nbsp; scorri per esplorare</p>
 
   <main>
     <div id="active-filter" onclick="clearFilter()">
       <span id="filter-text"></span>
-      <span class="clear">✕</span>
+      <span class="clear">&#x2715;</span>
     </div>
-
     <div class="list-controls">
       <button id="sort-btn" class="sort-btn" title="Ordina per data">
-        <svg id="sort-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="5 12 12 5 19 12"/></svg>
+        <svg id="sort-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/><polyline points="5 12 12 5 19 12"/>
+        </svg>
       </button>
     </div>
 
-    <ul class="ep-list" id="ep-list">
+<ul class="ep-list" id="ep-list">
   <li data-search="viaggiare in bus da stari grad a hvar, con čazmatrans. città vecchia, lesina, croazia. come viaggiare da stari grad a hvar, in croazia? certo, sembra facile quanto prendere un bus, ma quando ci ho provato, qualcosa è andato storto. tutti i mezzi pubblici che attraversano l&#x27;isola sono čazmatrans, la gloriosa azienda di trasporti locale che aggiunge un tocco di mistero e avventura a ogni viaggio a hvar. ecco perché insomma, vale la pena di parlarne. buon ascolto, e buon viaggio! 🇭🇷 stari grad - hvar. isola di lesina, croazia. 🟢 mappa: https://www.google.com/maps/d/u/0/edit?mid=1inrkquksl6vuprnefgyzsttcydn7kr8&amp;amp;usp=sharing 🟡 instagram: http://www.instagram.com/viaggio1x5 🟣 contatti: ⁠⁠https://linktr.ee/viaggio1x5 #viaggioincroazia #hvar #mareadriatico #cazmatrans #viaggiarelowcost #podcastdiviaggio #bus #trasporti ora, dove sta, diciamo, l&amp;#x27;elemento esplosivo, l&amp;#x27;elemento incognito? sta nel fatto che le stazioni dell&amp;#x27;autobus, quindi gli stop, non sono segnati, quindi non c&amp;#x27;è l&amp;#x27;indirizzo. viaggiamo per sorprenderci, vero? però poi torniamo a casa e ci accorgiamo che la fotografia che abbiamo scattato è identica a quella che c&amp;#x27;è su google immagini. io lo chiamo il trappolone dei viaggi clone. ecco perché la mia mappa sono state le persone. ed ecco perché quello che ascolterai non è un diario di viaggio perfetto. alla fine i viaggi con quelle liste delle 10 cose da fare sono tutti uguali. mentre il bello di viaggiare è tornare a casa con dei ricordi veramente tuoi. nel bene, ma soprattutto nel male. io sono caterina e questo è viaggio a 1.5. un podcast dove ascolterai come andare per davvero in giro per l&amp;#x27;europa con lo zaino sulle spalle. tutta la verità, minuto per minuto, un messaggio vocale alla volta. ci sei? andiamo! ma comunque ti avevo promesso di raccontarti come si fa ad andare da starygrad a hvar, che è il prossimo, la prossima tappa, perché io da lì poi vado dritta tutto il mese d&amp;#x27;agosto a verre. che non succeda qualcos&amp;#x27;altro perché non si può mai dire. ebbene, se tu googli questa chiave, queste keywords, starigrad hvar bus, ti troverai su un glorioso sito web. questo sito web, che adesso vado subito a cliccare in real time, si chiama kazzmatrans.hr. tu dirai, sarà forse un ufficio di collocamento? la risposta è non credo proprio. casmatrans che in realtà non si legge così se come paranada perché c&amp;#x27;è un segno c&amp;#x27;è un accento dovrebbe forse essere casmatrans raga non lo so credo che sia casmatrans a noi fa ridere lo diremo così comunque questo sito casmatrans si occupa del trans quindi del transito attraverso l&amp;#x27;isola e forse addirittura oltre l&amp;#x27;isola quindi se tu vai su questo sito scoprirai presto che non solo c&amp;#x27;è un&amp;#x27;app che puoi scaricare e che non funzionerà, te lo dico già in anteprima, ma c&amp;#x27;è addirittura un motore di ricerca dove tu inserendo la origine e la destinazione che vorresti percorrere ti darà zero risultati. e quindi cosa hanno fatto? perché loro sono sul pezzo, lo si vede già da come è organizzato il sito responsive, sì sicuramente. del 1996, cosa hanno fatto? hanno detto clicca qui e scaricati il pdf e così la smetti. il pdf tra l&amp;#x27;altro non è un pdf di quelli creati in pdf ma è semplicemente la fotocopia di un documento che già esisteva in qualche vita precedente sotto forma di carta, quindi quando te lo vai a scaricare ovviamente trovi le linee che sono ondulate perché ovviamente ha piattato dal coperchio della fotocopiatrice e financo segni di penna e impronte digitali e questo fa veramente decollare perché per il mestiere che faccio io sarebbe qualche cosa di inaudito no proprio che meriterebbe l&amp;#x27;inferno e invece no quindi in questo sito ti scarichi questo bel microsoft word pdf e trovi l&amp;#x27;orario che ditti dirà appunto che c&amp;#x27;è un autobus che da starigrad grada arriva, stavo per dire, a terra. cerchiamo di rimanere nel nostro. a terra a hvar, con tutta una serie di orari di partenza, ora, dove sta, diciamo," data-audio="https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/68013437/7_catzmatrans.mp3" data-date="20251005">
     <span class="date">05 Ott 2025</span>
     <a href="viaggiare-in-bus-da-stari-grad-a-hvar-con-azmatrans-citta-vecchia-lesina-croazia.html">Viaggiare in bus da Stari Grad a Hvar, con Čazmatrans. Città vecchia, Lesina, Croazia.</a>
@@ -1160,7 +1037,6 @@
   </li>
     </ul>
 
-
     <p class="no-results" id="no-results" style="display:none">Nessuna puntata trovata.</p>
   </main>
 
@@ -1178,17 +1054,18 @@
     </div>
   </footer>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
   // ── LOCATIONS ───────────────────────────────────────────
   const LOCATIONS = [
-    { tag: 'brasile',  label: 'Brasile',    lat: -15,   lon: -47,   color: '#22c55e' },
-    { tag: 'colombia', label: 'Colombia',   lat:  4,    lon: -74,   color: '#f59e0b' },
-    { tag: 'rica',     label: 'Costarica',  lat:  9.7,  lon: -83.8, color: '#10b981' },
-    { tag: 'panama',   label: 'Panamá',     lat:  8.9,  lon: -79.5, color: '#f97316' },
-    { tag: 'messico',  label: 'Messico',    lat: 19.4,  lon: -99.1, color: '#ec4899' },
-    { tag: 'berlino',  label: 'Berlino',    lat: 52.5,  lon:  13.4, color: '#3b82f6' },
-    { tag: 'amsterdam',label: 'Amsterdam',  lat: 52.4,  lon:   4.9, color: '#8b5cf6' },
-    { tag: 'croazia',  label: 'Croazia',    lat: 45.1,  lon:  15.2, color: '#06b6d4' },
+    { tag: 'brasile',   label: 'Brasile',     lat: -15,   lon: -47,   color: '#22c55e' },
+    { tag: 'colombia',  label: 'Colombia',    lat:  4,    lon: -74,   color: '#f59e0b' },
+    { tag: 'rica',      label: 'Costa Rica',  lat:  9.7,  lon: -83.8, color: '#10b981' },
+    { tag: 'panama',    label: 'Panama',      lat:  8.9,  lon: -79.5, color: '#f97316' },
+    { tag: 'messico',   label: 'Messico',     lat: 19.4,  lon: -99.1, color: '#ec4899' },
+    { tag: 'berlino',   label: 'Berlino',     lat: 52.5,  lon:  13.4, color: '#3b82f6' },
+    { tag: 'amsterdam', label: 'Amsterdam',   lat: 52.4,  lon:   4.9, color: '#8b5cf6' },
+    { tag: 'croazia',   label: 'Croazia',     lat: 45.1,  lon:  15.2, color: '#06b6d4' },
   ];
 
   const keywordsMap = {
@@ -1212,386 +1089,59 @@
   }
   LOCATIONS.forEach(loc => loc.count = countForTag(loc.tag));
 
-  // ── CANVAS GLOBE ────────────────────────────────────────
-  const wrap    = document.getElementById('globe-wrap');
-  const canvas  = document.getElementById('globe-canvas');
-  const ctx     = canvas.getContext('2d');
-  const pinLabel= document.getElementById('pin-label');
-  const labelName = document.getElementById('label-name');
-  const labelCount= document.getElementById('label-count');
-
-  let W, H, R, cx, cy;
-  function resize() {
-    W = wrap.clientWidth;
-    H = wrap.clientHeight;
-    canvas.width  = W * devicePixelRatio;
-    canvas.height = H * devicePixelRatio;
-    canvas.style.width  = W + 'px';
-    canvas.style.height = H + 'px';
-    ctx.scale(devicePixelRatio, devicePixelRatio);
-    R  = Math.min(W, H) * 0.44;
-    cx = W / 2;
-    cy = H / 2;
-  }
-  resize();
-  window.addEventListener('resize', () => { resize(); draw(); });
-
-  // ── ROTATION STATE ──────────────────────────────────────
-  let rotY = 0;   // longitude offset (radians)
-  let rotX = 0;   // latitude tilt (radians)
-  let velX = 0, velY = 0;
-  let zoom  = 1;  // 1 = normal, up to 3
-  let isDragging = false, prevX = 0, prevY = 0;
-  let pinchDist0 = 0, zoom0 = 1;
-
-  // ── EARTH TEXTURE via offscreen canvas ─────────────────
-  // We draw a simplified but recognisable world map using
-  // approximate polygon paths for each continent.
-  const texSize = 1024;
-  const texCanvas = document.createElement('canvas');
-  texCanvas.width = texSize; texCanvas.height = texSize / 2;
-  const tx = texCanvas.getContext('2d');
-
-  function drawTexture() {
-    const tw = texSize, th = texSize / 2;
-    // Ocean
-    tx.fillStyle = '#1a3a5c';
-    tx.fillRect(0, 0, tw, th);
-
-    // Convert geographic coords to texture pixels
-    // lon: -180..180 → 0..tw,  lat: 90..-90 → 0..th
-    function geo2px(lon, lat) {
-      return [(lon + 180) / 360 * tw, (90 - lat) / 180 * th];
-    }
-
-    function poly(coords, fill) {
-      tx.beginPath();
-      coords.forEach(([lon, lat], i) => {
-        const [x, y] = geo2px(lon, lat);
-        i === 0 ? tx.moveTo(x, y) : tx.lineTo(x, y);
-      });
-      tx.closePath();
-      tx.fillStyle = fill;
-      tx.fill();
-    }
-
-    const land = '#2d6a2d';
-    const desert = '#8b6914';
-    const mountain = '#5a7a3a';
-
-    // North America
-    poly([[-168,72],[-140,72],[-120,60],[-80,50],[-55,47],[-52,55],[-60,65],[-75,72],[-100,78],[-130,78],[-155,72],[-168,72]], land);
-    poly([[-120,50],[-75,25],[-85,16],[-92,14],[-104,19],[-117,32],[-120,50]], land);
-    // Greenland
-    poly([[-73,83],[-20,83],[-17,70],[-25,62],[-50,58],[-65,68],[-73,83]], '#c8dde8');
-    // South America
-    poly([[-82,10],[-60,12],[-52,5],[-35,-5],[-37,-15],[-50,-30],[-70,-55],[-78,-52],[-80,-30],[-80,0],[-82,10]], land);
-    poly([[-70,-20],[-50,-15],[-42,-22],[-60,-35],[-68,-28],[-70,-20]], desert);
-    // Europe
-    poly([[0,52],[25,52],[30,60],[28,72],[10,72],[-5,58],[0,52]], land);
-    poly([[25,52],[45,42],[40,38],[28,36],[15,36],[10,44],[25,52]], land);
-    poly([[-10,36],[0,36],[5,44],[0,52],[-10,48],[-10,36]], land);
-    // Africa
-    poly([[-18,16],[52,16],[52,-26],[32,-35],[18,-35],[-18,16]], land);
-    poly([[-5,36],[36,36],[36,22],[-5,22],[-5,36]], desert);
-    // Asia
-    poly([[26,72],[180,72],[180,50],[140,35],[120,20],[100,5],[70,10],[55,20],[40,36],[28,38],[26,72]], land);
-    poly([[80,40],[100,40],[100,25],[80,25],[80,40]], desert);
-    poly([[60,30],[80,28],[70,20],[55,20],[60,30]], desert);
-    // India
-    poly([[68,24],[88,24],[80,8],[72,8],[68,24]], land);
-    // Southeast Asia
-    poly([[100,25],[120,25],[120,0],[100,5],[100,25]], land);
-    // Japan
-    poly([[130,34],[145,34],[145,44],[130,44],[130,34]], land);
-    // Australia
-    poly([[114,-22],[154,-22],[154,-38],[140,-38],[130,-32],[114,-30],[114,-22]], land);
-    poly([[120,-24],[140,-24],[140,-30],[120,-30],[120,-24]], desert);
-    // New Zealand
-    poly([[165,-35],[178,-35],[170,-46],[162,-44],[165,-35]], land);
-    // Antarctica
-    poly([[-180,-70],[180,-70],[180,-90],[-180,-90]], '#ddeeff');
-    // Iceland
-    poly([[-25,64],[-13,64],[-13,67],[-25,67]], land);
-    // UK/Ireland
-    poly([[-8,52],[2,52],[2,58],[-6,58],[-8,52]], land);
-
-    // Ice caps
-    tx.fillStyle = '#ddeeff';
-    tx.fillRect(0, 0, tw, th * 0.05);  // Arctic
-  }
-  drawTexture();
-
-  // ── SPHERICAL PROJECTION ────────────────────────────────
-  // Convert lat/lon (with rotation) → canvas x,y + visibility
-  function project(lat, lon) {
-    const phi   = (90 - lat)  * Math.PI / 180;
-    const theta = (lon + 180) * Math.PI / 180;
-
-    // 3D point on unit sphere
-    let x3 = -Math.sin(phi) * Math.cos(theta);
-    let y3 =  Math.cos(phi);
-    let z3 =  Math.sin(phi) * Math.sin(theta);
-
-    // Apply rotX (tilt)
-    const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
-    const y3r =  y3 * cosX - z3 * sinX;
-    const z3r =  y3 * sinX + z3 * cosX;
-
-    // Apply rotY (spin)
-    const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
-    const x3r = x3 * cosY - z3r * sinY;
-    const z3f = x3 * sinY + z3r * cosY;
-
-    return {
-      sx: cx + x3r * R * zoom,
-      sy: cy - y3r * R * zoom,
-      z:  z3f,   // positive = facing viewer
-      x3: x3r, y3: y3r,
-    };
-  }
-
-  // ── DRAW EARTH ──────────────────────────────────────────
-  function drawGlobe() {
-    // Clip to circle
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(cx, cy, R * zoom, 0, Math.PI * 2);
-    ctx.clip();
-
-    // Draw texture mapped onto sphere via scanlines
-    const tw = texCanvas.width, th = texCanvas.height;
-    const texData = tx.getImageData(0, 0, tw, th);
-
-    const rz = R * zoom;
-    const steps = Math.ceil(rz * 2);
-    for (let py = 0; py <= steps; py++) {
-      const dy = (py / steps * 2 - 1);  // -1..1
-      if (Math.abs(dy) > 1) continue;
-      const dz = Math.sqrt(1 - dy * dy);
-
-      for (let px = 0; px <= steps; px++) {
-        const dx = (px / steps * 2 - 1);
-        const dz2 = dz * dz - dx * dx;
-        if (dz2 < 0) continue;
-        const pz = Math.sqrt(dz2);
-
-        // Inverse rotation to find original lat/lon
-        // Undo rotY
-        const cosY = Math.cos(-rotY), sinY = Math.sin(-rotY);
-        const rx = dx * cosY - pz * sinY;
-        const rz2 = dx * sinY + pz * cosY;
-
-        // Undo rotX
-        const cosX = Math.cos(-rotX), sinX = Math.sin(-rotX);
-        const ry2 = dy * cosX - rz2 * sinX;
-        const rz3 = dy * sinX + rz2 * cosX;
-
-        const lon = Math.atan2(rz2, -rx) * 180 / Math.PI - 180;
-        const lat = Math.asin(Math.max(-1, Math.min(1, ry2))) * 180 / Math.PI;
-
-        const tx2 = Math.floor(((lon + 180) / 360) * (tw - 1));
-        const ty2 = Math.floor(((90 - lat) / 180) * (th - 1));
-        const tidx = (ty2 * tw + tx2) * 4;
-
-        const r = texData.data[tidx];
-        const g = texData.data[tidx + 1];
-        const b = texData.data[tidx + 2];
-
-        const sx = cx + dx * rz;
-        const sy = cy - dy * rz;
-        const pixSize = rz * 2 / steps + 1;
-
-        ctx.fillStyle = `rgb(${r},${g},${b})`;
-        ctx.fillRect(sx, sy, pixSize, pixSize);
-      }
-    }
-    ctx.restore();
-  }
-
-  // ── DRAW ATMOSPHERE ─────────────────────────────────────
-  function drawAtmosphere() {
-    const rz = R * zoom;
-    const grad = ctx.createRadialGradient(cx, cy, rz * 0.85, cx, cy, rz * 1.12);
-    grad.addColorStop(0,   'rgba(30,100,200,0)');
-    grad.addColorStop(0.6, 'rgba(30,100,200,0.08)');
-    grad.addColorStop(1,   'rgba(20,60,150,0.25)');
-    ctx.beginPath();
-    ctx.arc(cx, cy, rz * 1.12, 0, Math.PI * 2);
-    ctx.fillStyle = grad;
-    ctx.fill();
-
-    // Specular highlight
-    const spec = ctx.createRadialGradient(cx - rz*0.3, cy - rz*0.35, 0, cx - rz*0.1, cy - rz*0.2, rz * 0.7);
-    spec.addColorStop(0,   'rgba(255,255,255,0.12)');
-    spec.addColorStop(0.4, 'rgba(255,255,255,0.03)');
-    spec.addColorStop(1,   'rgba(255,255,255,0)');
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(cx, cy, rz, 0, Math.PI * 2);
-    ctx.clip();
-    ctx.fillStyle = spec;
-    ctx.fillRect(cx - rz, cy - rz, rz * 2, rz * 2);
-    ctx.restore();
-
-    // Shadow (right side)
-    const shadow = ctx.createRadialGradient(cx + rz*0.5, cy + rz*0.3, 0, cx, cy, rz);
-    shadow.addColorStop(0,   'rgba(0,0,20,0.45)');
-    shadow.addColorStop(0.5, 'rgba(0,0,20,0.15)');
-    shadow.addColorStop(1,   'rgba(0,0,20,0)');
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(cx, cy, rz, 0, Math.PI * 2);
-    ctx.clip();
-    ctx.fillStyle = shadow;
-    ctx.fillRect(cx - rz, cy - rz, rz * 2, rz * 2);
-    ctx.restore();
-  }
-
-  // ── DRAW PINS ───────────────────────────────────────────
-  const animFrame = { t: 0 };
-  function drawPins() {
-    const t = animFrame.t;
-    LOCATIONS.forEach(loc => {
-      const p = project(loc.lat, loc.lon);
-      if (p.z < 0) return; // behind globe
-
-      const pr = 10 * zoom;  // pin radius - bigger
-
-      // Pulse ring
-      const pulse = 0.5 + 0.5 * Math.sin(t * 0.05 + loc.lon);
-      ctx.beginPath();
-      ctx.arc(p.sx, p.sy, pr * (1.5 + pulse * 0.8), 0, Math.PI * 2);
-      ctx.strokeStyle = loc.color + '88';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      // Pin dot
-      ctx.beginPath();
-      ctx.arc(p.sx, p.sy, pr, 0, Math.PI * 2);
-      ctx.fillStyle = loc.color;
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(255,255,255,0.8)';
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-
-      // Label above pin
-      ctx.font = `bold ${Math.max(10, 11 * zoom)}px Manrope, sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.fillStyle = 'rgba(0,0,0,0.5)';
-      ctx.fillText(loc.label, p.sx + 1, p.sy - pr * 1.8 + 1);
-      ctx.fillStyle = '#ffffff';
-      ctx.fillText(loc.label, p.sx, p.sy - pr * 1.8);
-    });
-  }
-
-  // ── MAIN DRAW ───────────────────────────────────────────
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-
-    // Dark bg circle
-    ctx.beginPath();
-    ctx.arc(cx, cy, R * zoom * 1.12, 0, Math.PI * 2);
-    ctx.fillStyle = '#050d1a';
-    ctx.fill();
-
-    drawGlobe();
-    drawAtmosphere();
-    drawPins();
-  }
-
-  // ── ANIMATION LOOP ──────────────────────────────────────
-  function loop() {
-    requestAnimationFrame(loop);
-    animFrame.t++;
-    if (!isDragging) {
-      velX *= 0.92;
-      velY *= 0.92;
-      rotX += velX;
-      rotY += velY;
-      rotX = Math.max(-Math.PI/2.2, Math.min(Math.PI/2.2, rotX));
-    }
-    draw();
-  }
-  loop();
-
-  // ── DRAG ────────────────────────────────────────────────
-  function onDown(x, y) {
-    isDragging = true; prevX = x; prevY = y;
-    velX = 0; velY = 0;
-  }
-  function onMove(x, y) {
-    if (!isDragging) return;
-    const dx = x - prevX, dy = y - prevY;
-    rotY += dx * 0.005;
-    rotX += dy * 0.005;
-    rotX = Math.max(-Math.PI/2.2, Math.min(Math.PI/2.2, rotX));
-    velY = dx * 0.005; velX = dy * 0.005;
-    prevX = x; prevY = y;
-  }
-  function onUp() { isDragging = false; }
-
-  canvas.addEventListener('mousedown', e => onDown(e.clientX, e.clientY));
-  window.addEventListener('mousemove',  e => { if(isDragging) onMove(e.clientX, e.clientY); });
-  window.addEventListener('mouseup',    onUp);
-
-  canvas.addEventListener('touchstart', e => {
-    if (e.touches.length === 1) {
-      onDown(e.touches[0].clientX, e.touches[0].clientY);
-    } else if (e.touches.length === 2) {
-      isDragging = false;
-      pinchDist0 = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
-                              e.touches[0].clientY - e.touches[1].clientY);
-      zoom0 = zoom;
-    }
-  }, { passive: true });
-  canvas.addEventListener('touchmove', e => {
-    if (e.touches.length === 1) {
-      onMove(e.touches[0].clientX, e.touches[0].clientY);
-    } else if (e.touches.length === 2) {
-      const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
-                           e.touches[0].clientY - e.touches[1].clientY);
-      zoom = Math.max(0.8, Math.min(3, zoom0 * d / pinchDist0));
-    }
-  }, { passive: true });
-  canvas.addEventListener('touchend', onUp);
-
-  // Scroll to zoom (desktop)
-  canvas.addEventListener('wheel', e => {
-    e.preventDefault();
-    zoom = Math.max(0.8, Math.min(3, zoom - e.deltaY * 0.001));
-  }, { passive: false });
-
-  // ── HOVER & CLICK ───────────────────────────────────────
-  function getHitPin(ex, ey) {
-    const rect = canvas.getBoundingClientRect();
-    const mx = ex - rect.left, my = ey - rect.top;
-    let best = null, bestD = 28 * zoom; // hit area radius
-    LOCATIONS.forEach(loc => {
-      const p = project(loc.lat, loc.lon);
-      if (p.z < 0) return;
-      const d = Math.hypot(p.sx - mx, p.sy - my);
-      if (d < bestD) { bestD = d; best = loc; }
-    });
-    return best;
-  }
-
-  canvas.addEventListener('mousemove', e => {
-    const hit = getHitPin(e.clientX, e.clientY);
-    if (hit) {
-      labelName.textContent  = hit.label;
-      labelCount.textContent = hit.count + ' puntate';
-      pinLabel.classList.add('visible');
-      canvas.style.cursor = 'pointer';
-    } else {
-      pinLabel.classList.remove('visible');
-      canvas.style.cursor = isDragging ? 'grabbing' : 'grab';
-    }
+  // ── LEAFLET MAP ─────────────────────────────────────────
+  const map = L.map('map', {
+    center: [20, -20],
+    zoom: 2,
+    zoomControl: false,
+    scrollWheelZoom: false,   // no accidental zoom while scrolling page
+    doubleClickZoom: false,
+    touchZoom: false,         // no pinch zoom — keep UX clean
+    dragging: true,
+    attributionControl: true,
   });
 
-  canvas.addEventListener('click', e => {
-    const hit = getHitPin(e.clientX, e.clientY);
-    if (hit) selectTag(hit.tag, hit.label, hit.count);
+  // Stamen Toner via Stadia (current CDN for Stamen tiles)
+  L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}{r}.png', {
+    minZoom: 1,
+    maxZoom: 6,
+    attribution: '&copy; <a href="https://stamen.com">Stamen</a> &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
+  }).addTo(map);
+
+  // ── CUSTOM PIN ICON ─────────────────────────────────────
+  function makeIcon(color, active) {
+    const r = active ? 14 : 11;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${r*2+8}" height="${r*2+8}" viewBox="0 0 ${r*2+8} ${r*2+8}">
+      <circle cx="${r+4}" cy="${r+4}" r="${r}" fill="${color}" stroke="white" stroke-width="2.5"/>
+    </svg>`;
+    return L.divIcon({
+      html: svg,
+      className: '',
+      iconSize:   [r*2+8, r*2+8],
+      iconAnchor: [r+4,   r+4],
+    });
+  }
+
+  // ── ADD PINS ────────────────────────────────────────────
+  let activeTag = null;
+  const markers = {};
+
+  LOCATIONS.forEach(loc => {
+    const marker = L.marker([loc.lat, loc.lon], {
+      icon: makeIcon(loc.color, false),
+      title: loc.label,
+    }).addTo(map);
+
+    marker.on('click', () => {
+      // reset all
+      LOCATIONS.forEach(l => markers[l.tag].setIcon(makeIcon(l.color, false)));
+      // activate this
+      marker.setIcon(makeIcon(loc.color, true));
+      activeTag = loc.tag;
+      selectTag(loc.tag, loc.label, loc.count);
+    });
+
+    markers[loc.tag] = marker;
   });
 
   // ── FILTER ──────────────────────────────────────────────
@@ -1608,13 +1158,15 @@
     noResults.style.display = visible === 0 ? 'block' : 'none';
   }
   function selectTag(tag, label, count) {
-    document.getElementById('filter-text').textContent = '📍 ' + label + ' — ' + count + ' puntate';
+    document.getElementById('filter-text').textContent = '\u{1F4CD} ' + label + ' \u2014 ' + count + ' puntate';
     document.getElementById('active-filter').classList.add('visible');
     filterItems(tag);
     document.querySelector('main').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
   function clearFilter() {
+    activeTag = null;
     document.getElementById('active-filter').classList.remove('visible');
+    LOCATIONS.forEach(l => markers[l.tag].setIcon(makeIcon(l.color, false)));
     filterItems(null);
   }
   window.clearFilter = clearFilter;
