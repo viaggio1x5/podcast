@@ -21,9 +21,6 @@
     <img src='https://d3wo5wojvuv7l.cloudfront.net/t_rss_itunes_square_1400/images.spreaker.com/original/363c5f246932e74a99af6edfed6d2c08.jpg' alt='Eins, zwei, polizei: scroccare i mezzi pubblici BVG a Berlino, Germania.' class='ep-cover'>
     <h1>Eins, zwei, polizei: scroccare i mezzi pubblici BVG a Berlino, Germania.</h1>
     <p class="date">Fri, 02 Aug 2024</p>
-    <div class="ep-play-row">
-      <audio id="ep-audio" controls src="https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/60894997/bvg.mp3" preload="none" style="width:100%;max-width:560px;display:block;margin:0 var(--pad) 1.5rem;accent-color:#3b82f6;height:40px;"></audio>
-    </div>
     <div class="description">Si può finire in prigione per una multa? Dipende.<br />La Germania ha regole precise, ma se vieni da fuori può essere dura decifrarle; ecco perché stavolta andiamo a fare un giro sui mezzi pubblici di Berlino, meglio noti come i treni, bus e tram gialli della BVG. Ci sei? Andiamo!<br />🇩🇪 Berlino, Germania<br />
 <div class="ep-map-card"><iframe src="https://www.google.com/maps/d/embed?mid=1INrkQUKsl6vUpRNEFGYzstTcYDN7KR8&ll=47.11977157332829,10.717340199999995&z=5" loading="lazy" allowfullscreen></iframe></div><br />🟣 🟣 🟣 🟣<br />Per chiacchierare della prossima partenza o per salutarci:<br />📸 INSTAGRAM 👉 ⁠⁠<a href="https://instagram.com/viaggio1x5%20%E2%81%A0%E2%81%A0" target="_blank" rel="noreferrer noopener">⁠⁠⁠⁠https://instagram.com/viaggio1x5 ⁠⁠⁠⁠⁠⁠</a><br />📮 EMAIL 👉 ⁠⁠viaggio1x5@gmail.com<br />⁠⁠🌎 POSTI DA VEDERE A BERLINO 👉 <a href="https://www.spreaker.com/cms/shows/6107009/%E2%81%A0%E2%81%A0%E2%81%A0https:/www.google.com/maps/d/u/0/edit?mid=1INrkQUKsl6vUpRNEFGYzstTcYDN7KR8&amp;usp=sharing%E2%81%A0%E2%81%A0" target="_blank" rel="noreferrer noopener">⁠⁠⁠⁠⁠⁠⁠https://www.google.com/maps/d/u/0/edit?mid=1INrkQUKsl6vUpRNEFGYzstTcYDN7KR8&amp;usp=sharing⁠⁠⁠⁠⁠⁠</a><br />🟣 🟣 🟣 🟣</div>
     
@@ -67,5 +64,30 @@
     </div>
   </footer>
   </div>
+  <div class="mini-player" id="ep-mini-player">
+    <div class="mini-player__info">
+      <span class="mini-player__title" id="ep-mini-title"></span>
+      <button class="mini-player__close" id="ep-mini-close">&#x2715;</button>
+    </div>
+    <audio id="ep-mini-audio" controls></audio>
+  </div>
+  <script>
+  (function() {
+    var player   = document.getElementById('ep-mini-player');
+    var audio    = document.getElementById('ep-mini-audio');
+    var closeBtn = document.getElementById('ep-mini-close');
+    var titleEl  = document.getElementById('ep-mini-title');
+    if (audio) audio.src = "https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/60894997/bvg.mp3";
+    if (titleEl) titleEl.textContent = document.querySelector("h1") ? document.querySelector("h1").textContent.trim() : document.title.split("—")[0].trim();
+    if (player) setTimeout(function(){ player.classList.add('visible'); }, 100);
+    if (audio)  setTimeout(function(){ audio.play().catch(function(){}); }, 3000);
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+        if (audio) audio.pause();
+        if (player) player.classList.remove('visible');
+      });
+    }
+  })();
+  </script>
 </body>
 </html>

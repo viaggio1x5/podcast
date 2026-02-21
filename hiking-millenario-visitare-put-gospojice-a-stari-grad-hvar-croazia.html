@@ -21,9 +21,6 @@
     <img src='https://d3wo5wojvuv7l.cloudfront.net/t_rss_itunes_square_1400/images.spreaker.com/original/d7def8d526e8e652278bd88cccf4b7ee.jpg' alt='Hiking millenario: visitare Put Gospojice a Stari Grad, Hvar, Croazia.' class='ep-cover'>
     <h1>Hiking millenario: visitare Put Gospojice a Stari Grad, Hvar, Croazia.</h1>
     <p class="date">Wed, 01 Oct 2025</p>
-    <div class="ep-play-row">
-      <audio id="ep-audio" controls src="https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/67972688/4_hiking_millenario.mp3" preload="none" style="width:100%;max-width:560px;display:block;margin:0 var(--pad) 1.5rem;accent-color:#3b82f6;height:40px;"></audio>
-    </div>
     <div class="description">Dove ti porta la Put Gospojice?<br />È vero che lungo il sentiero si possono scoprire storie dimenticate e panorami mozzafiato?<br /><br /><br />Sembra semplice hiking, ma attraversare la Put Gospojice è più un tuffo di testa nel tempo.<br />Io ci sono finita per caso, ma ne è valsa la pena perché questa storica strada tra Stari Grad e Vreboska è disseminata di sorprese: una pista di decollo, un trim monolitico, e persino rovine Greche intatte da 2400 anni.<br /><br />Stavolta scendiamo a piedi nella Pianura Agricola di Cittavecchia, nota come Starigradsko Polje, per scoprire chi abitava l'isola nel passato, e soprattutto quali siti UNESCO puoi visitare in una serata di inizio estate.<br /><br />🇭🇷 Put Gospojice. Isola di Hvar, Stari Grad - Vreboska, Croazia.<br />
 <div class="ep-map-card"><iframe src="https://www.google.com/maps/d/embed?mid=1INrkQUKsl6vUpRNEFGYzstTcYDN7KR8&ll=47.11977157332829,10.717340199999995&z=5" loading="lazy" allowfullscreen></iframe></div><br />🟢 Mappa: https://www.google.com/maps/d/u/0/edit?<br />mid=1INrkQUKsl6vUpRNEFGYzstTcYDN7KR8&amp;usp=sharing<br />🟡 Instagram: ⁠http://www.instagram.com/viaggio1x5<br />🟣 Contatti: ⁠⁠https://linktr.ee/viaggio1x5<br /><br />#PutGospojice, #HikingHvar, #StariGrad, #Vreboska, </div></div>
   </main>
@@ -62,5 +59,30 @@
     </div>
   </footer>
   </div>
+  <div class="mini-player" id="ep-mini-player">
+    <div class="mini-player__info">
+      <span class="mini-player__title" id="ep-mini-title"></span>
+      <button class="mini-player__close" id="ep-mini-close">&#x2715;</button>
+    </div>
+    <audio id="ep-mini-audio" controls></audio>
+  </div>
+  <script>
+  (function() {
+    var player   = document.getElementById('ep-mini-player');
+    var audio    = document.getElementById('ep-mini-audio');
+    var closeBtn = document.getElementById('ep-mini-close');
+    var titleEl  = document.getElementById('ep-mini-title');
+    if (audio) audio.src = "https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/67972688/4_hiking_millenario.mp3";
+    if (titleEl) titleEl.textContent = document.querySelector("h1") ? document.querySelector("h1").textContent.trim() : document.title.split("—")[0].trim();
+    if (player) setTimeout(function(){ player.classList.add('visible'); }, 100);
+    if (audio)  setTimeout(function(){ audio.play().catch(function(){}); }, 3000);
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+        if (audio) audio.pause();
+        if (player) player.classList.remove('visible');
+      });
+    }
+  })();
+  </script>
 </body>
 </html>

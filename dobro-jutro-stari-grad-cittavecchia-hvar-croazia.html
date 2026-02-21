@@ -21,9 +21,6 @@
     <img src='https://d3wo5wojvuv7l.cloudfront.net/t_rss_itunes_square_1400/images.spreaker.com/original/8b8930ade039677ac1b7aaa63fda13dc.jpg' alt='Dobro Jutro Stari Grad! Cittavecchia, Hvar, Croazia.' class='ep-cover'>
     <h1>Dobro Jutro Stari Grad! Cittavecchia, Hvar, Croazia.</h1>
     <p class="date">Fri, 19 Sep 2025</p>
-    <div class="ep-play-row">
-      <audio id="ep-audio" controls src="https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/67819398/1_berlin_split.mp3" preload="none" style="width:100%;max-width:560px;display:block;margin:0 var(--pad) 1.5rem;accent-color:#3b82f6;height:40px;"></audio>
-    </div>
     <div class="description">Come viaggiare da Berlino all'isola di Hvar, in Croazia?<br />Perché si chiama Lesina, e come mai Istria e Dalmazia spesso adottano la toponomastica italiana?<br /><br />Ciao raga, finalmente si riparte verso l'isola dalmata di Hvar, casa di incantesimi, spiagge miracolose e leggende sommerse che ascolterete in questa stagione sul Mare Adriatico!<br />Stavolta partiamo dall'etimologia e la letteratura per poi capire quanto costa andarci. Infatti, l'argomento budget è un tema sempre utile se come me viaggiate all'insegna del risparmio - o della povertà, diciamola tutta.<br /><br />A proposito, devo ringraziare Alja Gudžević, Sanja Roić e Sanja Barbarić di White Rabbit Hostel per la generosa ospitalità: senza di loro questa stagione del podcast non esisterebbe, perciò come si dice in Croazia, hvala.<br /><br />Benozzo allora, se voi ci siete, andiamo!<br /><br />🇭🇷 Stari Grad/ Cittavecchia. Isola di Lesina/Hvar, Croazia.<br />
 <div class="ep-map-card"><iframe src="https://www.google.com/maps/d/embed?mid=1INrkQUKsl6vUpRNEFGYzstTcYDN7KR8&ll=47.11977157332829,10.717340199999995&z=5" loading="lazy" allowfullscreen></iframe></div><br /><br /><br />🟢 Mappa: https://www.google.com/maps/d/u/0/edit?mid=1INrkQUKsl6vUpRNEFGYzstTcYDN7KR8&amp;usp=sharing<br />🟡 Instagram: http://www.viaggio1x5<br />🟣 Contatti: ⁠⁠https://linktr.ee/viaggio1x5<br /><br /><br /><br />#ViaggioInCroazia #Hvar #MareAdriatico #SpiaggeDalmate #CulturaCroata #ViaggiareLowCost #PodcastDiViaggio #OspitalitàCroata #Etimologia #LeggendeDalmate #AvventureInCroazia </div>
     
@@ -67,5 +64,30 @@
     </div>
   </footer>
   </div>
+  <div class="mini-player" id="ep-mini-player">
+    <div class="mini-player__info">
+      <span class="mini-player__title" id="ep-mini-title"></span>
+      <button class="mini-player__close" id="ep-mini-close">&#x2715;</button>
+    </div>
+    <audio id="ep-mini-audio" controls></audio>
+  </div>
+  <script>
+  (function() {
+    var player   = document.getElementById('ep-mini-player');
+    var audio    = document.getElementById('ep-mini-audio');
+    var closeBtn = document.getElementById('ep-mini-close');
+    var titleEl  = document.getElementById('ep-mini-title');
+    if (audio) audio.src = "https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/67819398/1_berlin_split.mp3";
+    if (titleEl) titleEl.textContent = document.querySelector("h1") ? document.querySelector("h1").textContent.trim() : document.title.split("—")[0].trim();
+    if (player) setTimeout(function(){ player.classList.add('visible'); }, 100);
+    if (audio)  setTimeout(function(){ audio.play().catch(function(){}); }, 3000);
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+        if (audio) audio.pause();
+        if (player) player.classList.remove('visible');
+      });
+    }
+  })();
+  </script>
 </body>
 </html>

@@ -21,9 +21,6 @@
     <img src='https://d3wo5wojvuv7l.cloudfront.net/t_rss_itunes_square_1400/images.spreaker.com/original/f31138580ba40d84b1a6959a5a791594.jpg' alt='FLINTA*: cosa significa, perché esiste e dove trovare community ed eventi a Berlino' class='ep-cover'>
     <h1>FLINTA*: cosa significa, perché esiste e dove trovare community ed eventi a Berlino</h1>
     <p class="date">Mon, 05 Aug 2024</p>
-    <div class="ep-play-row">
-      <audio id="ep-audio" controls src="https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/60922735/flinta.mp3" preload="none" style="width:100%;max-width:560px;display:block;margin:0 var(--pad) 1.5rem;accent-color:#3b82f6;height:40px;"></audio>
-    </div>
     <div class="description">Mai sentito parlare di FLINTA*? Io zero, ma una sera tardi l'ho ringraziato mentre cercavo una toilette a Kreuzberg, quando ancora pensavo fosse il nome di un DJ o un club di Berlino. Invece para nada, come ho poi scoperto fermandomi a parlare con chi era in coda con me. Se passi da qui lo leggerai spesso in giro, quindi stavolta ti racconto a cosa serve e cosa c'entra con i party, la sicurezza e lo spazio urbano - anche se stavolta andremo più sui quiz che sull'Enciclopedia. Buon ascolto! ✌️<br /><br />🇩🇪 Schöneberg, Berlino<br />
 <div class="ep-map-card"><iframe src="https://www.google.com/maps/d/embed?mid=1INrkQUKsl6vUpRNEFGYzstTcYDN7KR8&ll=47.11977157332829,10.717340199999995&z=5" loading="lazy" allowfullscreen></iframe></div><br />🟣 🟣 🟣 🟣<br />Per chiacchierare della prossima partenza o per salutarci:<br />📸 INSTAGRAM 👉 ⁠⁠<a href="https://instagram.com/viaggio1x5%20%E2%81%A0%E2%81%A0" target="_blank" rel="noreferrer noopener">⁠⁠⁠⁠https://instagram.com/viaggio1x5 ⁠⁠⁠⁠⁠⁠</a><br />📮 EMAIL 👉 ⁠⁠viaggio1x5@gmail.com<br />⁠⁠🌎 POSTI DA VEDERE A BERLINO 👉 <a href="https://www.spreaker.com/cms/shows/6107009/%E2%81%A0%E2%81%A0%E2%81%A0https:/www.google.com/maps/d/u/0/edit?mid=1INrkQUKsl6vUpRNEFGYzstTcYDN7KR8&amp;usp=sharing%E2%81%A0%E2%81%A0" target="_blank" rel="noreferrer noopener">⁠⁠⁠⁠⁠⁠⁠https://www.google.com/maps/d/u/0/edit?mid=1INrkQUKsl6vUpRNEFGYzstTcYDN7KR8&amp;usp=sharing⁠⁠⁠⁠⁠⁠</a><br />🟣 🟣 🟣 🟣</div>
     
@@ -67,5 +64,30 @@
     </div>
   </footer>
   </div>
+  <div class="mini-player" id="ep-mini-player">
+    <div class="mini-player__info">
+      <span class="mini-player__title" id="ep-mini-title"></span>
+      <button class="mini-player__close" id="ep-mini-close">&#x2715;</button>
+    </div>
+    <audio id="ep-mini-audio" controls></audio>
+  </div>
+  <script>
+  (function() {
+    var player   = document.getElementById('ep-mini-player');
+    var audio    = document.getElementById('ep-mini-audio');
+    var closeBtn = document.getElementById('ep-mini-close');
+    var titleEl  = document.getElementById('ep-mini-title');
+    if (audio) audio.src = "https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/60922735/flinta.mp3";
+    if (titleEl) titleEl.textContent = document.querySelector("h1") ? document.querySelector("h1").textContent.trim() : document.title.split("—")[0].trim();
+    if (player) setTimeout(function(){ player.classList.add('visible'); }, 100);
+    if (audio)  setTimeout(function(){ audio.play().catch(function(){}); }, 3000);
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+        if (audio) audio.pause();
+        if (player) player.classList.remove('visible');
+      });
+    }
+  })();
+  </script>
 </body>
 </html>
