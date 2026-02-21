@@ -891,6 +891,10 @@ main > audio { display: none; }
     flex: none;
   }
   .ep-nav-card--next { flex-direction: row; text-align: left; }
+  .ep-nav-card__title {
+    -webkit-line-clamp: 4;
+    font-size: 0.95rem;
+  }
   .ep-map-card iframe { height: 175px; }
   .ep-footer { flex-direction: column; align-items: flex-start; gap: 1rem; }
   .list-controls .search-wrap { max-width: 100%; }
@@ -913,32 +917,7 @@ main > audio { display: none; }
   visibility: visible !important;
 }
 
-/* ── TOPBAR MOBILE ─────────────────────────────────────── */
-@media (max-width: 700px) {
-  #topbar {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    padding: 0.6rem var(--pad);
-  }
-  .topbar__logo {
-    flex: 1 0 100%;
-    font-size: 0.82rem;
-  }
-  .topbar__pills {
-    flex: 1 1 auto;
-    flex-wrap: wrap;
-    overflow: visible;
-    max-width: 100% !important;
-  }
-  .topbar__pills .tag {
-    font-size: 0.78rem;
-    padding: 0.28rem 0.75rem;
-  }
-  .topbar__nav {
-    flex-shrink: 0;
-  }
-  body { padding-top: 80px; }
-}
+
 
 @media (max-width: 400px) {
   .topbar__pills .tag {
@@ -948,3 +927,121 @@ main > audio { display: none; }
   body { padding-top: 100px; }
 }
 
+/* ══════════════════════════════════════════════════════════
+   HAMBURGER + MOBILE MENU  (≤700px)
+══════════════════════════════════════════════════════════ */
+
+/* Il bottone esiste nel DOM ma è nascosto su desktop */
+.topbar__hamburger { display: none; }
+
+@media (max-width: 700px) {
+  body { padding-top: 56px; }
+
+  /* Nascondi pills e nav desktop */
+  #topbar .topbar__pills,
+  #topbar .topbar__nav { display: none !important; }
+
+  /* Mostra hamburger — margin-left:auto lo spinge a destra */
+  .topbar__hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin-left: auto;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    background: none;
+    border: 1.5px solid var(--border);
+    border-radius: 50%;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .topbar__hamburger span {
+    display: block;
+    width: 14px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: transform .25s, opacity .2s;
+    transform-origin: center;
+  }
+  /* Animazione → X */
+  .topbar__hamburger.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .topbar__hamburger.is-open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .topbar__hamburger.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* ── HERO mobile: pills come carosello orizzontale ──── */
+  .hero__controls {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0.5rem;
+    padding-bottom: 4px;
+  }
+  .hero__controls::-webkit-scrollbar { display: none; }
+  .hero__controls .sort-btn { flex-shrink: 0; }
+  .hero__controls .tags-section {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    overflow: visible;
+  }
+  .hero__controls .tag { flex-shrink: 0; }
+}
+
+/* ── OVERLAY menu a schermo intero ─────────────────────── */
+#mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: #fff;
+  flex-direction: column;
+  padding: 5rem var(--pad) 2rem;
+  overflow-y: auto;
+}
+#mobile-menu.is-open { display: flex; }
+
+/* Pulsante ✕ fisso in alto a destra */
+.mobile-menu__close {
+  position: fixed;
+  top: 0.75rem;
+  right: var(--pad);
+  z-index: 501;
+  width: 36px;
+  height: 36px;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  line-height: 1;
+}
+
+/* Voci del menu */
+.mobile-menu__tag,
+.mobile-menu__about {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-family: var(--font);
+  color: var(--text);
+  text-decoration: none;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+  transition: color .15s;
+}
+.mobile-menu__tag.active,
+.mobile-menu__tag:hover { color: var(--accent); }
+.mobile-menu__about {
+  margin-top: 0.5rem;
+  border-bottom: none;
+  color: var(--muted);
+}
