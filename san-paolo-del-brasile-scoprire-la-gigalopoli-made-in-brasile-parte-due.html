@@ -21,9 +21,6 @@
     <img src='https://d3wo5wojvuv7l.cloudfront.net/t_rss_itunes_square_1400/images.spreaker.com/original/ce2e6e5dcd7aa1598593df4a5abc517d.jpg' alt='San Paolo del Brasile: scoprire la Gigalopoli Made in Brasile - parte due' class='ep-cover'>
     <h1>San Paolo del Brasile: scoprire la Gigalopoli Made in Brasile - parte due</h1>
     <p class="date">Sun, 10 Mar 2024</p>
-    <div class="ep-play-row">
-      <audio id="ep-audio" controls src="https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/58989425/paolodue.mp3" preload="none" style="width:100%;max-width:560px;display:block;margin:0 var(--pad) 1.5rem;accent-color:#3b82f6;height:40px;"></audio>
-    </div>
     <div class="description">💡Come sono nate le favelas e perché si chiamano così?<br />💡Qual è l'equivalente brasiliano del bidet?<br />💡Chi sono i rapper più famosi di San Paolo?<br /><br />Quello che fa girare la testa qui è visitare megapalazzi di lusso da un intero codice postale, poco lontano dagli "agglomerati subnormali", quelli che oggi vengono chiamati periferie o comunità. <br />A metà fra questi due mondi incontro la storia e la musica dei Racionais MC's, la crew di rappers nata nella favela più grande di Sao Paulo che per quarant'anni ha raccontato al mondo cosa significa vivere qui. <br /><br />🇧🇷 São Paulo, Brasile.<br />
 <div class="ep-map-card"><iframe src="https://www.google.com/maps/d/embed?mid=19ccJyBYE5OYThGv1a_vcZyL6dvEN0Iw&ll=4.0,‑74.0&z=4" loading="lazy" allowfullscreen></iframe></div><br />🟣 Mi trovi su ⁠<a href="https://www.instagram.com/viaggio1x5/" target="_blank" rel="noreferrer noopener">@viaggio1x5</a><br />🟢 Mappe &amp; Contatti: ⁠⁠<a href="https://linktr.ee/viaggio1x5" target="_blank" rel="noreferrer noopener">https://linktr.ee/viaggio1x5</a></div>
     
@@ -67,5 +64,30 @@
     </div>
   </footer>
   </div>
+  <div class="mini-player" id="ep-mini-player">
+    <div class="mini-player__info">
+      <span class="mini-player__title" id="ep-mini-title"></span>
+      <button class="mini-player__close" id="ep-mini-close">&#x2715;</button>
+    </div>
+    <audio id="ep-mini-audio" controls></audio>
+  </div>
+  <script>
+  (function() {
+    var player   = document.getElementById('ep-mini-player');
+    var audio    = document.getElementById('ep-mini-audio');
+    var closeBtn = document.getElementById('ep-mini-close');
+    var titleEl  = document.getElementById('ep-mini-title');
+    if (audio) audio.src = "https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/58989425/paolodue.mp3";
+    if (titleEl) titleEl.textContent = document.querySelector("h1") ? document.querySelector("h1").textContent.trim() : document.title.split("—")[0].trim();
+    if (player) setTimeout(function(){ player.classList.add('visible'); }, 100);
+    if (audio)  setTimeout(function(){ audio.play().catch(function(){}); }, 3000);
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+        if (audio) audio.pause();
+        if (player) player.classList.remove('visible');
+      });
+    }
+  })();
+  </script>
 </body>
 </html>

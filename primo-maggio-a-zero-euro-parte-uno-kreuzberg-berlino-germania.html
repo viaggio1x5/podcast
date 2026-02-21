@@ -21,9 +21,6 @@
     <img src='https://d3wo5wojvuv7l.cloudfront.net/t_rss_itunes_square_1400/images.spreaker.com/original/c9e008ecb901cb0450e4aa26bc4a0eea.jpg' alt='Primo Maggio a zero euro! (parte uno) - Kreuzberg, Berlino, Germania.' class='ep-cover'>
     <h1>Primo Maggio a zero euro! (parte uno) - Kreuzberg, Berlino, Germania.</h1>
     <p class="date">Sat, 03 May 2025</p>
-    <div class="ep-play-row">
-      <audio id="ep-audio" controls src="https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/65875047/1_primomaggio_berlino.mp3" preload="none" style="width:100%;max-width:560px;display:block;margin:0 var(--pad) 1.5rem;accent-color:#3b82f6;height:40px;"></audio>
-    </div>
     <div class="description">Vieni a Berlino per il Primo Maggio? Butta le liste delle "10 cose da non perdere" e salta in bici con me!<br /><br /><br />In questa prima puntata pedaliamo dentro Kreuzberg alla scoperta del MayDay, giorno di festa per tutte le tasche dove gli späti diventano circoli ARCI, i parchi esplodono di rave e le bakerei si trasformano in gloriosi vecchiodromi. <br /><br />Ci sei? Andiamo!<br /><br />🟢 Segui la Mappa del circuito: <a href="https://www.google.com/maps/d/u/2/viewer?mid=1INrkQUKsl6vUpRNEFGYzstTcYDN7KR8&amp;ll=52.49964334474544%2C13.420858966108108&amp;z=15" target="_blank" rel="noreferrer noopener">https://www.google.com/maps/d/u/2/viewer?mid=1INrkQUKsl6vUpRNEFGYzstTcYDN7KR8&amp;ll=52.49964334474544%2C13.420858966108108&amp;z=15</a><br />🟡 Instagram: ⁠<a href="https://www.instagram.com/viaggio1x5/" target="_blank" rel="noreferrer noopener">@viaggio1x5</a><br />🟣 Contatti: ⁠⁠<a href="https://linktr.ee/viaggio1x5" target="_blank" rel="noreferrer noopener">https://linktr.ee/viaggio1x5</a><br /><br />#primomaggio #erstermai #mayday #vivereaberlino</div>
     
     <section class="transcript">
@@ -66,5 +63,30 @@
     </div>
   </footer>
   </div>
+  <div class="mini-player" id="ep-mini-player">
+    <div class="mini-player__info">
+      <span class="mini-player__title" id="ep-mini-title"></span>
+      <button class="mini-player__close" id="ep-mini-close">&#x2715;</button>
+    </div>
+    <audio id="ep-mini-audio" controls></audio>
+  </div>
+  <script>
+  (function() {
+    var player   = document.getElementById('ep-mini-player');
+    var audio    = document.getElementById('ep-mini-audio');
+    var closeBtn = document.getElementById('ep-mini-close');
+    var titleEl  = document.getElementById('ep-mini-title');
+    if (audio) audio.src = "https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/65875047/1_primomaggio_berlino.mp3";
+    if (titleEl) titleEl.textContent = document.querySelector("h1") ? document.querySelector("h1").textContent.trim() : document.title.split("—")[0].trim();
+    if (player) setTimeout(function(){ player.classList.add('visible'); }, 100);
+    if (audio)  setTimeout(function(){ audio.play().catch(function(){}); }, 3000);
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+        if (audio) audio.pause();
+        if (player) player.classList.remove('visible');
+      });
+    }
+  })();
+  </script>
 </body>
 </html>

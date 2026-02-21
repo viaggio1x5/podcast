@@ -21,9 +21,6 @@
     <img src='https://d3wo5wojvuv7l.cloudfront.net/t_rss_itunes_square_1400/images.spreaker.com/original/24e18e0a84ed42e4ac768a1274caf30e.jpg' alt='Sofar Sounds Berlin: dentro il Concerto Segreto di Toshin, Freddy Hall, June Carousel. Berlino, Schoneberg.' class='ep-cover'>
     <h1>Sofar Sounds Berlin: dentro il Concerto Segreto di Toshin, Freddy Hall, June Carousel. Berlino, Schoneberg.</h1>
     <p class="date">Mon, 04 Nov 2024</p>
-    <div class="ep-play-row">
-      <audio id="ep-audio" controls src="https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/62604839/10_sofarsoundberlin.mp3" preload="none" style="width:100%;max-width:560px;display:block;margin:0 var(--pad) 1.5rem;accent-color:#3b82f6;height:40px;"></audio>
-    </div>
     <div class="description">💡Concerto segreto in un negozio di cappelli? Succede solo a Berlino!<br /><br />Domenica sera bizzarra a un concerto speciale, uno di quelli che accadono quando meno te lo aspetti, cioé Sofar Sounds, un evento che si tiene in oltre 400 città nel mondo, ma che qui ha appena festeggiato il primo anniversario. <br /><br />In questa puntata vi racconto com’è aspettare fino all’ultimo per conoscere lineup e location, e soprattutto com'è andata a CaYambe, la manifattura di cappelli che ha ospitato l'evento a Schöneberg. Sul palco, o meglio, sul tappeto tra i panama e i borsalino, c'erano Toshin, June Carousel e Freddy Hall, tre acts che mai avrei intercettato in un concerto così intimo e raccolto. <br /><br />Poteva andare malissimo, e invece è stata una bomba: buon ascolto on the road di Sofar Sounds Berlin, un bel viaggio nella scena musicale segreta di Berlino.<br /><br />Grazie a <a href="https://www.instagram.com/sofarsoundsberlin/" target="_blank" rel="noreferrer noopener">Sofar Sounds Berlin</a>, <a href="https://www.instagram.com/cayambehats/" target="_blank" rel="noreferrer noopener">CaYambe Hutmanufaktur</a>, <a href="https://open.spotify.com/intl-it/artist/3AsnVV70cVK2LIbzr18HvS" target="_blank" rel="noreferrer noopener">Toshín</a>, <a href="https://open.spotify.com/intl-it/artist/0uV5S1E8HxUmrBHinzQgCX" target="_blank" rel="noreferrer noopener">Freddy Hall</a>, <a href="https://open.spotify.com/intl-it/artist/5ZQ4am2EjYVLR1Bx9ihkdM" target="_blank" rel="noreferrer noopener">June Carousel</a>.<br /><br />🇩🇪 ⁠⁠⁠Berlino, Schöneberg, Germania.<br />
 <div class="ep-map-card"><iframe src="https://www.google.com/maps/d/embed?mid=1INrkQUKsl6vUpRNEFGYzstTcYDN7KR8&ll=47.11977157332829,10.717340199999995&z=5" loading="lazy" allowfullscreen></iframe></div><br />🟣 Mi trovi su <a href="https://www.instagram.com/viaggio1x5/" target="_blank" rel="noreferrer noopener">⁠@viaggio1x5 ⁠</a><br />🟢 Mappe &amp; Contatti: <a href="https://linktr.ee/viaggio1x5" target="_blank" rel="noreferrer noopener">⁠⁠https://linktr.ee/viaggio1x5⁠</a> <a href="https://linktr.ee/viaggio1x5" target="_blank" rel="noreferrer noopener">⁠⁠⁠</a><br /><br />#sofarsoundsberlin #livemusicberlin #berlinconcerts #vivereingermania #podcastitaliano #vitadaexpat #berlino #junecarousel #toshin #cayambe #freddyhall</div></div>
   </main>
@@ -62,5 +59,30 @@
     </div>
   </footer>
   </div>
+  <div class="mini-player" id="ep-mini-player">
+    <div class="mini-player__info">
+      <span class="mini-player__title" id="ep-mini-title"></span>
+      <button class="mini-player__close" id="ep-mini-close">&#x2715;</button>
+    </div>
+    <audio id="ep-mini-audio" controls></audio>
+  </div>
+  <script>
+  (function() {
+    var player   = document.getElementById('ep-mini-player');
+    var audio    = document.getElementById('ep-mini-audio');
+    var closeBtn = document.getElementById('ep-mini-close');
+    var titleEl  = document.getElementById('ep-mini-title');
+    if (audio) audio.src = "https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/62604839/10_sofarsoundberlin.mp3";
+    if (titleEl) titleEl.textContent = document.querySelector("h1") ? document.querySelector("h1").textContent.trim() : document.title.split("—")[0].trim();
+    if (player) setTimeout(function(){ player.classList.add('visible'); }, 100);
+    if (audio)  setTimeout(function(){ audio.play().catch(function(){}); }, 3000);
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+        if (audio) audio.pause();
+        if (player) player.classList.remove('visible');
+      });
+    }
+  })();
+  </script>
 </body>
 </html>
