@@ -1187,23 +1187,31 @@ const STOPS = [
 ];
 
 const keywordsMap = {
-  brasile:   ['brasile','brasil','rio','sao paulo','florianopolis','ilhabela'],
-  colombia:  ['colombia','bogota','cartagena','santa marta','cali','medellin','providencia','san andres','palomino','tayrona'],
-  rica:      ['costa rica','costarica','san jose'],
-  panama:    ['panama'],
-  messico:   ['messico','mexico','oaxaca','yucatan','holbox','cancun','playa','bacalar','cozumel','mazunte','puerto escondido'],
-  berlino:   ['berlino','berlin','germany','germania','kreuzberg','neukölln','mitte','schoneberg'],
-  amsterdam: ['amsterdam','olanda'],
-  croazia:   ['croazia','hvar','croatia','stari grad','lesina'],
+  brasile:   ['brasile', 'rio de janeiro', 'sao paulo', 'florianopolis', 'ilhabela'],
+  colombia:  ['colombia', 'bogot', 'cartagena', 'santa marta', 'cali', 'medellin', 'providencia', 'san andr', 'palomino', 'tayrona'],
+  rica:      ['costa rica', 'san jos'],
+  panama:    ['panam'],
+  messico:   ['messico', 'oaxaca', 'yucatan', 'holbox', 'cancun', 'bacalar', 'cozumel', 'mazunte', 'puerto escondido'],
+  berlino:   ['berlino', 'germania'],
+  amsterdam: ['amsterdam', 'olanda'],
+  croazia:   ['croazia', 'hvar', 'stari grad'],
 };
 
-// ── COUNT ──────────────────────────────────────────────
+// ── COUNT & FILTER: match on title text only ───────────
 const items = Array.from(document.querySelectorAll('.ep-list li'));
+
+function titleOf(li) {
+  const a = li.querySelector('a');
+  return a ? a.textContent.toLowerCase() : '';
+}
+
+function matchesTag(li, tag) {
+  const title = titleOf(li);
+  return (keywordsMap[tag] || [tag]).some(k => title.includes(k));
+}
+
 function countForTag(tag) {
-  return items.filter(li => {
-    const s = (li.dataset.search || '').toLowerCase();
-    return (keywordsMap[tag]||[tag]).some(k => s.includes(k));
-  }).length;
+  return items.filter(li => matchesTag(li, tag)).length;
 }
 STOPS.forEach(s => s.count = countForTag(s.tag));
 
@@ -1249,8 +1257,7 @@ function filterItems(tag) {
   let visible = 0;
   items.forEach(li => {
     if (!tag) { li.style.display = ''; visible++; return; }
-    const s = (li.dataset.search || '').toLowerCase();
-    const show = (keywordsMap[tag]||[tag]).some(k => s.includes(k));
+    const show = matchesTag(li, tag);
     li.style.display = show ? '' : 'none';
     if (show) visible++;
   });
