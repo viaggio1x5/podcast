@@ -21,6 +21,9 @@
     <img src='https://d3wo5wojvuv7l.cloudfront.net/t_rss_itunes_square_1400/images.spreaker.com/original/f1af1e90d3c2597c5fab0a1aa1541f44.jpg' alt='Primo Maggio a zero euro! (parte quattro) - Rave a Treptower Park, Berlino, Germania.' class='ep-cover'>
     <h1>Primo Maggio a zero euro! (parte quattro) - Rave a Treptower Park, Berlino, Germania.</h1>
     <p class="date">Tue, 06 May 2025</p>
+    <div class="ep-play-row">
+      <audio id="ep-audio" controls src="https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/65934561/primo_maggio_parte_quattro.mp3" preload="none" style="width:100%;max-width:560px;display:block;margin:0 var(--pad) 1.5rem;accent-color:#3b82f6;height:40px;"></audio>
+    </div>
     <div class="description">Vieni a Berlino per il Primo Maggio?<br />Butta le liste delle "10 cose da non perdere" e salta in bici con me!<br /><br />Pedaliamo al tramonto verso lo sfascio, e in quest'ultima puntata lo guardiamo da vicinissimo al rave di Treptower Park. Prima però dobbiamo arrivarci, e attraversare uno dei segmenti più imballati di tutto il May Day 2025: Schlesisches Tor, Club der Visionaere, Wrangelkietz.<br /><br />Qui gli astronauti di Blu sono ormai ostaggio delle startup milionarie, e la città rigurgita la sua nausea sui marciapiedi come a tentare di pareggiare il conto, forse recuperare un po' di quello spirito punk che sembrava poterla difendere per sempre dall'appetito del Capitale. <br /><br />E invece no, perciò occhio al volume e al plot twist finale.<br /><br />🟢 Segui la Mappa del circuito: https://www.google.com/maps/d/u/2/viewer?mid=1INrkQUKsl6vUpRNEFGYzstTcYDN7KR8&amp;ll=52.49964334474544%2C13.420858966108108&amp;z=15<br />🟡 Instagram: ⁠@viaggio1x5<br />🟣 Contatti: ⁠⁠https://linktr.ee/viaggio1x5<br /><br />1mai, #1stofmay, #BerlinRave, #BerlinoBalla, #Griessmühle, #MayDayBerlin, #RaveCulture, #SoundSystem, #StreetParty, #TechnoLife, #UndergroundBerlin, #berlin, #berlingermany, #berlino, #berlinopenair, #caterinafinelli, #disco, #erstermai, #festa, #germania, #house, #may1st, #mayday, #musica, #party, #podcastitalia, #podcastitaliano, #primomaggio, #primomaggioberlino, #rave, #techno, #viaggi, #vitadaexpat, #vivereaberlino</div>
     
     <section class="transcript">
@@ -63,61 +66,5 @@
     </div>
   </footer>
   </div>
-  <div class="mini-player" id="ep-mini-player">
-    <div class="mini-player__info">
-      <span class="mini-player__title" id="ep-mini-title"></span>
-      <button class="mini-player__close" id="ep-mini-close">&#x2715;</button>
-    </div>
-    <audio id="ep-mini-audio" controls></audio>
-  </div>
-  <script>
-  (function() {
-    var player   = document.getElementById('ep-mini-player');
-    var audio    = document.getElementById('ep-mini-audio');
-    var closeBtn = document.getElementById('ep-mini-close');
-    var titleEl  = document.getElementById('ep-mini-title');
-
-    if (audio) audio.src = "https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/65934561/primo_maggio_parte_quattro.mp3";
-    if (titleEl) titleEl.textContent = document.querySelector("h1") ? document.querySelector("h1").textContent.trim() : document.title.split("—")[0].trim();
-    if (player) setTimeout(function(){ player.classList.add('visible'); }, 100);
-    if (audio)  setTimeout(function(){ audio.play().catch(function(){}); }, 3000);
-
-    if (closeBtn) {
-      closeBtn.addEventListener('click', function() {
-        if (audio) audio.pause();
-        if (player) player.classList.remove('visible');
-      });
-    }
-
-    // Linkify URLs in .description
-    function linkify(node) {
-      if (node.nodeType===3 && /https?:\/\//.test(node.textContent)) {
-        var frag = document.createDocumentFragment();
-        node.textContent.split(/(https?:\/\/[^\s<]+)/g).forEach(function(p) {
-          if (/^https?:\/\//.test(p)) {
-            var a=document.createElement('a'); a.href=p; a.textContent=p;
-            a.target='_blank'; a.rel='noopener'; a.className='ep-link';
-            frag.appendChild(a);
-          } else { frag.appendChild(document.createTextNode(p)); }
-        });
-        node.parentNode.replaceChild(frag, node);
-      } else if (node.nodeType===1 && node.nodeName!=='A' && node.nodeName!=='SCRIPT') {
-        Array.from(node.childNodes).forEach(linkify);
-      }
-    }
-    var desc = document.querySelector('.description');
-    if (desc) linkify(desc);
-
-    // Tag filtering on homepage when hashtag clicked
-    document.querySelectorAll('.ep-hashtag').forEach(function(a) {
-      a.addEventListener('click', function(e) {
-        var tag = a.getAttribute('data-tag');
-        if (tag) {
-          sessionStorage.setItem('ep_filter_tag', tag);
-        }
-      });
-    });
-  })();
-  </script>
 </body>
 </html>
