@@ -440,7 +440,7 @@ main {
 /* ── FOOTER ────────────────────────────────────────────── */
 footer {
   border-top: 1px solid var(--border);
-  padding: 1.4rem var(--pad) 6rem;
+  padding: 1.4rem var(--pad) 7rem;
   font-size: 0.7rem;
   color: var(--muted);
   letter-spacing: 0.04em;
@@ -799,7 +799,7 @@ main > audio { display: none; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.3rem var(--pad) 6rem;
+  padding: 1.3rem var(--pad) 7rem;
   border-top: 1px solid var(--border);
   gap: 1.5rem;
   flex-wrap: wrap;
