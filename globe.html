@@ -108,13 +108,15 @@
     #globe-wrap {
       position: relative;
       width: 100%;
-      max-width: 520px;
+      max-width: 440px;
+      height: clamp(300px, 55vw, 440px);
       margin: 0 auto;
-      aspect-ratio: 1;
       cursor: grab;
     }
     #globe-wrap:active { cursor: grabbing; }
     #globe-canvas {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       display: block;
@@ -278,9 +280,7 @@
   <header class="site-header">
     <div class="site-header__logo">Viaggio a <strong>1.5x</strong></div>
     <nav class="site-header__nav">
-      <a href="index.html" class="nav-globe-btn" title="Vista lista">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-      </a>
+      <a href="index.html">Lista</a>
       <a href="https://linktr.ee/viaggio1x5" target="_blank" rel="noopener">About</a>
     </nav>
   </header>
@@ -1178,331 +1178,461 @@
     </div>
   </footer>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
   // ── LOCATIONS ───────────────────────────────────────────
   const LOCATIONS = [
-    { tag: 'brasile',  label: 'Brasile',   lat: -15,  lon: -47,  color: '#22c55e' },
-    { tag: 'colombia', label: 'Colombia',  lat:  4,   lon: -74,  color: '#f59e0b' },
-    { tag: 'rica',     label: 'Costarica', lat:  9.7, lon: -83.8,color: '#10b981' },
-    { tag: 'panama',   label: 'Panamá',    lat:  8.9, lon: -79.5,color: '#f97316' },
-    { tag: 'messico',  label: 'Messico',   lat: 19.4, lon: -99.1,color: '#ec4899' },
-    { tag: 'berlino',  label: 'Berlino',   lat: 52.5, lon: 13.4, color: '#3b82f6' },
-    { tag: 'amsterdam',label: 'Amsterdam', lat: 52.4, lon: 4.9,  color: '#8b5cf6' },
-    { tag: 'croazia',  label: 'Croazia',   lat: 45.1, lon: 15.2, color: '#06b6d4' },
+    { tag: 'brasile',  label: 'Brasile',    lat: -15,   lon: -47,   color: '#22c55e' },
+    { tag: 'colombia', label: 'Colombia',   lat:  4,    lon: -74,   color: '#f59e0b' },
+    { tag: 'rica',     label: 'Costarica',  lat:  9.7,  lon: -83.8, color: '#10b981' },
+    { tag: 'panama',   label: 'Panamá',     lat:  8.9,  lon: -79.5, color: '#f97316' },
+    { tag: 'messico',  label: 'Messico',    lat: 19.4,  lon: -99.1, color: '#ec4899' },
+    { tag: 'berlino',  label: 'Berlino',    lat: 52.5,  lon:  13.4, color: '#3b82f6' },
+    { tag: 'amsterdam',label: 'Amsterdam',  lat: 52.4,  lon:   4.9, color: '#8b5cf6' },
+    { tag: 'croazia',  label: 'Croazia',    lat: 45.1,  lon:  15.2, color: '#06b6d4' },
   ];
 
-  // ── THREE.JS GLOBE ──────────────────────────────────────
-  const wrap = document.getElementById('globe-wrap');
-  const canvas = document.getElementById('globe-canvas');
-  const W = () => wrap.clientWidth;
-  const H = () => wrap.clientHeight;
+  const keywordsMap = {
+    brasile:   ['brasile','brasil','rio','sao paulo'],
+    colombia:  ['colombia','bogota','cartagena','santa marta','cali','medellin'],
+    rica:      ['costa rica','costarica'],
+    panama:    ['panama'],
+    messico:   ['messico','mexico','oaxaca','yucatan','holbox'],
+    berlino:   ['berlino','berlin','germany','germania'],
+    amsterdam: ['amsterdam'],
+    croazia:   ['croazia','hvar','croatia','stari grad'],
+  };
 
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(W(), H());
-  renderer.setClearColor(0x000000, 0);
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-  camera.position.z = 2.8;
-
-  // Globe
-  const geo = new THREE.SphereGeometry(1, 64, 64);
-
-  // Earth texture
-  const loader = new THREE.TextureLoader();
-  const earthTex = loader.load(
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Land_ocean_ice_cloud_2048.jpg/2048px-Land_ocean_ice_cloud_2048.jpg'
-  );
-  const oceanMat = new THREE.MeshPhongMaterial({
-    map: earthTex,
-    shininess: 20,
-    specular: 0x112233,
-  });
-  const ocean = new THREE.Mesh(geo, oceanMat);
-  scene.add(ocean);
-
-  // Wireframe grid overlay
-  const wireGeo = new THREE.SphereGeometry(1.002, 24, 16);
-  const wireMat = new THREE.MeshBasicMaterial({
-    color: 0x1e3a5f,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.06,
-  });
-  scene.add(new THREE.Mesh(wireGeo, wireMat));
-
-  // Atmosphere glow
-  const atmGeo = new THREE.SphereGeometry(1.08, 32, 32);
-  const atmMat = new THREE.MeshBasicMaterial({
-    color: 0x1d4ed8,
-    transparent: true,
-    opacity: 0.08,
-    side: THREE.BackSide,
-  });
-  scene.add(new THREE.Mesh(atmGeo, atmMat));
-
-  // Lights
-  scene.add(new THREE.AmbientLight(0x334466, 1.2));
-  const sun = new THREE.DirectionalLight(0x6699ff, 1.8);
-  sun.position.set(5, 3, 5);
-  scene.add(sun);
-
-  // Helper: lat/lon → 3D point on sphere
-  function latLonToVec3(lat, lon, r = 1) {
-    const phi = (90 - lat) * Math.PI / 180;
-    const theta = (lon + 180) * Math.PI / 180;
-    return new THREE.Vector3(
-      -r * Math.sin(phi) * Math.cos(theta),
-       r * Math.cos(phi),
-       r * Math.sin(phi) * Math.sin(theta)
-    );
-  }
-
-  // Count episodes per tag
+  // ── COUNT EPISODES ──────────────────────────────────────
   const items = Array.from(document.querySelectorAll('.ep-list li'));
   function countForTag(tag) {
     return items.filter(li => {
-      const search = (li.dataset.search || '').toLowerCase();
-      const href = (li.querySelector('a')?.getAttribute('href') || '').toLowerCase();
-      // Use keyword matching similar to index
-      const keywords = {
-        brasile: ['brasile', 'brasil', 'rio', 'sao paulo'],
-        colombia: ['colombia', 'bogota', 'cartagena', 'santa marta', 'cali', 'medellin', 'providencia', 'san andres'],
-        rica: ['costa rica', 'costarica'],
-        panama: ['panama'],
-        messico: ['messico', 'mexico', 'oaxaca', 'yucatan', 'holbox', 'escondido'],
-        berlino: ['berlino', 'berlin', 'germany', 'germania'],
-        amsterdam: ['amsterdam'],
-        croazia: ['croazia', 'hvar', 'croatia', 'stari grad'],
-      };
-      return (keywords[tag] || [tag]).some(k => search.includes(k));
+      const s = (li.dataset.search || '').toLowerCase();
+      return (keywordsMap[tag]||[tag]).some(k => s.includes(k));
     }).length;
   }
+  LOCATIONS.forEach(loc => loc.count = countForTag(loc.tag));
 
-  // Create pins
-  const pinGroup = new THREE.Group();
-  scene.add(pinGroup);
-  const pinMeshes = [];
+  // ── CANVAS GLOBE ────────────────────────────────────────
+  const wrap    = document.getElementById('globe-wrap');
+  const canvas  = document.getElementById('globe-canvas');
+  const ctx     = canvas.getContext('2d');
+  const pinLabel= document.getElementById('pin-label');
+  const labelName = document.getElementById('label-name');
+  const labelCount= document.getElementById('label-count');
 
-  LOCATIONS.forEach(loc => {
-    const pos = latLonToVec3(loc.lat, loc.lon, 1.01);
-    const count = countForTag(loc.tag);
+  let W, H, R, cx, cy;
+  function resize() {
+    W = wrap.clientWidth;
+    H = wrap.clientHeight;
+    canvas.width  = W * devicePixelRatio;
+    canvas.height = H * devicePixelRatio;
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+    R  = Math.min(W, H) * 0.44;
+    cx = W / 2;
+    cy = H / 2;
+  }
+  resize();
+  window.addEventListener('resize', () => { resize(); draw(); });
 
-    // Pin sphere
-    const pinGeo = new THREE.SphereGeometry(0.025, 12, 12);
-    const pinMat = new THREE.MeshBasicMaterial({ color: loc.color });
-    const pin = new THREE.Mesh(pinGeo, pinMat);
-    pin.position.copy(pos);
-    pin.userData = { ...loc, count };
-    pinGroup.add(pin);
-    pinMeshes.push(pin);
+  // ── ROTATION STATE ──────────────────────────────────────
+  let rotY = 0;   // longitude offset (radians)
+  let rotX = 0;   // latitude tilt (radians)
+  let velX = 0, velY = 0;
+  let zoom  = 1;  // 1 = normal, up to 3
+  let isDragging = false, prevX = 0, prevY = 0;
+  let pinchDist0 = 0, zoom0 = 1;
 
-    // Pulse ring
-    const ringGeo = new THREE.RingGeometry(0.032, 0.045, 16);
-    const ringMat = new THREE.MeshBasicMaterial({
-      color: loc.color, transparent: true, opacity: 0.5, side: THREE.DoubleSide
-    });
-    const ring = new THREE.Mesh(ringGeo, ringMat);
-    ring.position.copy(pos.clone().multiplyScalar(1.012));
-    ring.lookAt(pos.clone().multiplyScalar(2));
-    ring.userData.isRing = true;
-    ring.userData.phase = Math.random() * Math.PI * 2;
-    pinGroup.add(ring);
-  });
+  // ── EARTH TEXTURE via offscreen canvas ─────────────────
+  // We draw a simplified but recognisable world map using
+  // approximate polygon paths for each continent.
+  const texSize = 1024;
+  const texCanvas = document.createElement('canvas');
+  texCanvas.width = texSize; texCanvas.height = texSize / 2;
+  const tx = texCanvas.getContext('2d');
 
-  // Globe group for rotation
-  const globeGroup = new THREE.Group();
-  globeGroup.add(ocean);
-  globeGroup.add(wireGeo.uuid ? new THREE.Mesh(wireGeo, wireMat) : scene.children[1]);
-  scene.remove(ocean);
-  // rebuild cleanly
-  scene.clear();
-  const globeG = new THREE.Group();
-  scene.add(globeG);
+  function drawTexture() {
+    const tw = texSize, th = texSize / 2;
+    // Ocean
+    tx.fillStyle = '#1a3a5c';
+    tx.fillRect(0, 0, tw, th);
 
-  const ocean2 = new THREE.Mesh(new THREE.SphereGeometry(1, 64, 64), oceanMat);
-  globeG.add(ocean2);
-  globeG.add(new THREE.Mesh(new THREE.SphereGeometry(1.002, 24, 16), wireMat));
-  globeG.add(new THREE.Mesh(new THREE.SphereGeometry(1.08, 32, 32), atmMat));
-  globeG.add(pinGroup);
-  scene.add(new THREE.AmbientLight(0x334466, 1.2));
-  scene.add(sun);
-
-  // ── INTERACTION ─────────────────────────────────────────
-  let isDragging = false;
-  let prevMouse = { x: 0, y: 0 };
-  let rotVel = { x: 0, y: 0 };
-  let activeTag = null;
-
-  canvas.addEventListener('mousedown', e => {
-    isDragging = true;
-    prevMouse = { x: e.clientX, y: e.clientY };
-    rotVel = { x: 0, y: 0 };
-  });
-  canvas.addEventListener('touchstart', e => {
-    isDragging = true;
-    prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    rotVel = { x: 0, y: 0 };
-  }, { passive: true });
-
-  window.addEventListener('mousemove', e => {
-    if (!isDragging) return;
-    const dx = e.clientX - prevMouse.x;
-    const dy = e.clientY - prevMouse.y;
-    globeG.rotation.y += dx * 0.008;
-    globeG.rotation.x += dy * 0.008;
-    globeG.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, globeG.rotation.x));
-    rotVel = { x: dy * 0.004, y: dx * 0.004 };
-    prevMouse = { x: e.clientX, y: e.clientY };
-  });
-  window.addEventListener('touchmove', e => {
-    if (!isDragging) return;
-    const dx = e.touches[0].clientX - prevMouse.x;
-    const dy = e.touches[0].clientY - prevMouse.y;
-    globeG.rotation.y += dx * 0.008;
-    globeG.rotation.x += dy * 0.008;
-    globeG.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, globeG.rotation.x));
-    rotVel = { x: dy * 0.004, y: dx * 0.004 };
-    prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-  }, { passive: true });
-
-  window.addEventListener('mouseup', () => { isDragging = false; });
-  window.addEventListener('touchend', () => { isDragging = false; });
-
-  // Click to filter
-  const raycaster = new THREE.Raycaster();
-  const mouse = new THREE.Vector2();
-
-  canvas.addEventListener('click', e => {
-    const rect = canvas.getBoundingClientRect();
-    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-    raycaster.setFromCamera(mouse, camera);
-    const hits = raycaster.intersectObjects(pinMeshes);
-    if (hits.length > 0) {
-      const loc = hits[0].object.userData;
-      if (loc.tag) selectTag(loc.tag, loc.label, loc.count);
+    // Convert geographic coords to texture pixels
+    // lon: -180..180 → 0..tw,  lat: 90..-90 → 0..th
+    function geo2px(lon, lat) {
+      return [(lon + 180) / 360 * tw, (90 - lat) / 180 * th];
     }
-  });
 
-  // Hover label
-  canvas.addEventListener('mousemove', e => {
-    if (isDragging) return;
+    function poly(coords, fill) {
+      tx.beginPath();
+      coords.forEach(([lon, lat], i) => {
+        const [x, y] = geo2px(lon, lat);
+        i === 0 ? tx.moveTo(x, y) : tx.lineTo(x, y);
+      });
+      tx.closePath();
+      tx.fillStyle = fill;
+      tx.fill();
+    }
+
+    const land = '#2d6a2d';
+    const desert = '#8b6914';
+    const mountain = '#5a7a3a';
+
+    // North America
+    poly([[-168,72],[-140,72],[-120,60],[-80,50],[-55,47],[-52,55],[-60,65],[-75,72],[-100,78],[-130,78],[-155,72],[-168,72]], land);
+    poly([[-120,50],[-75,25],[-85,16],[-92,14],[-104,19],[-117,32],[-120,50]], land);
+    // Greenland
+    poly([[-73,83],[-20,83],[-17,70],[-25,62],[-50,58],[-65,68],[-73,83]], '#c8dde8');
+    // South America
+    poly([[-82,10],[-60,12],[-52,5],[-35,-5],[-37,-15],[-50,-30],[-70,-55],[-78,-52],[-80,-30],[-80,0],[-82,10]], land);
+    poly([[-70,-20],[-50,-15],[-42,-22],[-60,-35],[-68,-28],[-70,-20]], desert);
+    // Europe
+    poly([[0,52],[25,52],[30,60],[28,72],[10,72],[-5,58],[0,52]], land);
+    poly([[25,52],[45,42],[40,38],[28,36],[15,36],[10,44],[25,52]], land);
+    poly([[-10,36],[0,36],[5,44],[0,52],[-10,48],[-10,36]], land);
+    // Africa
+    poly([[-18,16],[52,16],[52,-26],[32,-35],[18,-35],[-18,16]], land);
+    poly([[-5,36],[36,36],[36,22],[-5,22],[-5,36]], desert);
+    // Asia
+    poly([[26,72],[180,72],[180,50],[140,35],[120,20],[100,5],[70,10],[55,20],[40,36],[28,38],[26,72]], land);
+    poly([[80,40],[100,40],[100,25],[80,25],[80,40]], desert);
+    poly([[60,30],[80,28],[70,20],[55,20],[60,30]], desert);
+    // India
+    poly([[68,24],[88,24],[80,8],[72,8],[68,24]], land);
+    // Southeast Asia
+    poly([[100,25],[120,25],[120,0],[100,5],[100,25]], land);
+    // Japan
+    poly([[130,34],[145,34],[145,44],[130,44],[130,34]], land);
+    // Australia
+    poly([[114,-22],[154,-22],[154,-38],[140,-38],[130,-32],[114,-30],[114,-22]], land);
+    poly([[120,-24],[140,-24],[140,-30],[120,-30],[120,-24]], desert);
+    // New Zealand
+    poly([[165,-35],[178,-35],[170,-46],[162,-44],[165,-35]], land);
+    // Antarctica
+    poly([[-180,-70],[180,-70],[180,-90],[-180,-90]], '#ddeeff');
+    // Iceland
+    poly([[-25,64],[-13,64],[-13,67],[-25,67]], land);
+    // UK/Ireland
+    poly([[-8,52],[2,52],[2,58],[-6,58],[-8,52]], land);
+
+    // Ice caps
+    tx.fillStyle = '#ddeeff';
+    tx.fillRect(0, 0, tw, th * 0.05);  // Arctic
+  }
+  drawTexture();
+
+  // ── SPHERICAL PROJECTION ────────────────────────────────
+  // Convert lat/lon (with rotation) → canvas x,y + visibility
+  function project(lat, lon) {
+    const phi   = (90 - lat)  * Math.PI / 180;
+    const theta = (lon + 180) * Math.PI / 180;
+
+    // 3D point on unit sphere
+    let x3 = -Math.sin(phi) * Math.cos(theta);
+    let y3 =  Math.cos(phi);
+    let z3 =  Math.sin(phi) * Math.sin(theta);
+
+    // Apply rotX (tilt)
+    const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+    const y3r =  y3 * cosX - z3 * sinX;
+    const z3r =  y3 * sinX + z3 * cosX;
+
+    // Apply rotY (spin)
+    const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+    const x3r = x3 * cosY - z3r * sinY;
+    const z3f = x3 * sinY + z3r * cosY;
+
+    return {
+      sx: cx + x3r * R * zoom,
+      sy: cy - y3r * R * zoom,
+      z:  z3f,   // positive = facing viewer
+      x3: x3r, y3: y3r,
+    };
+  }
+
+  // ── DRAW EARTH ──────────────────────────────────────────
+  function drawGlobe() {
+    // Clip to circle
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, R * zoom, 0, Math.PI * 2);
+    ctx.clip();
+
+    // Draw texture mapped onto sphere via scanlines
+    const tw = texCanvas.width, th = texCanvas.height;
+    const texData = tx.getImageData(0, 0, tw, th);
+
+    const rz = R * zoom;
+    const steps = Math.ceil(rz * 2);
+    for (let py = 0; py <= steps; py++) {
+      const dy = (py / steps * 2 - 1);  // -1..1
+      if (Math.abs(dy) > 1) continue;
+      const dz = Math.sqrt(1 - dy * dy);
+
+      for (let px = 0; px <= steps; px++) {
+        const dx = (px / steps * 2 - 1);
+        const dz2 = dz * dz - dx * dx;
+        if (dz2 < 0) continue;
+        const pz = Math.sqrt(dz2);
+
+        // Inverse rotation to find original lat/lon
+        // Undo rotY
+        const cosY = Math.cos(-rotY), sinY = Math.sin(-rotY);
+        const rx = dx * cosY - pz * sinY;
+        const rz2 = dx * sinY + pz * cosY;
+
+        // Undo rotX
+        const cosX = Math.cos(-rotX), sinX = Math.sin(-rotX);
+        const ry2 = dy * cosX - rz2 * sinX;
+        const rz3 = dy * sinX + rz2 * cosX;
+
+        const lon = Math.atan2(rz2, -rx) * 180 / Math.PI - 180;
+        const lat = Math.asin(Math.max(-1, Math.min(1, ry2))) * 180 / Math.PI;
+
+        const tx2 = Math.floor(((lon + 180) / 360) * (tw - 1));
+        const ty2 = Math.floor(((90 - lat) / 180) * (th - 1));
+        const tidx = (ty2 * tw + tx2) * 4;
+
+        const r = texData.data[tidx];
+        const g = texData.data[tidx + 1];
+        const b = texData.data[tidx + 2];
+
+        const sx = cx + dx * rz;
+        const sy = cy - dy * rz;
+        const pixSize = rz * 2 / steps + 1;
+
+        ctx.fillStyle = `rgb(${r},${g},${b})`;
+        ctx.fillRect(sx, sy, pixSize, pixSize);
+      }
+    }
+    ctx.restore();
+  }
+
+  // ── DRAW ATMOSPHERE ─────────────────────────────────────
+  function drawAtmosphere() {
+    const rz = R * zoom;
+    const grad = ctx.createRadialGradient(cx, cy, rz * 0.85, cx, cy, rz * 1.12);
+    grad.addColorStop(0,   'rgba(30,100,200,0)');
+    grad.addColorStop(0.6, 'rgba(30,100,200,0.08)');
+    grad.addColorStop(1,   'rgba(20,60,150,0.25)');
+    ctx.beginPath();
+    ctx.arc(cx, cy, rz * 1.12, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Specular highlight
+    const spec = ctx.createRadialGradient(cx - rz*0.3, cy - rz*0.35, 0, cx - rz*0.1, cy - rz*0.2, rz * 0.7);
+    spec.addColorStop(0,   'rgba(255,255,255,0.12)');
+    spec.addColorStop(0.4, 'rgba(255,255,255,0.03)');
+    spec.addColorStop(1,   'rgba(255,255,255,0)');
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, rz, 0, Math.PI * 2);
+    ctx.clip();
+    ctx.fillStyle = spec;
+    ctx.fillRect(cx - rz, cy - rz, rz * 2, rz * 2);
+    ctx.restore();
+
+    // Shadow (right side)
+    const shadow = ctx.createRadialGradient(cx + rz*0.5, cy + rz*0.3, 0, cx, cy, rz);
+    shadow.addColorStop(0,   'rgba(0,0,20,0.45)');
+    shadow.addColorStop(0.5, 'rgba(0,0,20,0.15)');
+    shadow.addColorStop(1,   'rgba(0,0,20,0)');
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, rz, 0, Math.PI * 2);
+    ctx.clip();
+    ctx.fillStyle = shadow;
+    ctx.fillRect(cx - rz, cy - rz, rz * 2, rz * 2);
+    ctx.restore();
+  }
+
+  // ── DRAW PINS ───────────────────────────────────────────
+  const animFrame = { t: 0 };
+  function drawPins() {
+    const t = animFrame.t;
+    LOCATIONS.forEach(loc => {
+      const p = project(loc.lat, loc.lon);
+      if (p.z < 0) return; // behind globe
+
+      const pr = 10 * zoom;  // pin radius - bigger
+
+      // Pulse ring
+      const pulse = 0.5 + 0.5 * Math.sin(t * 0.05 + loc.lon);
+      ctx.beginPath();
+      ctx.arc(p.sx, p.sy, pr * (1.5 + pulse * 0.8), 0, Math.PI * 2);
+      ctx.strokeStyle = loc.color + '88';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Pin dot
+      ctx.beginPath();
+      ctx.arc(p.sx, p.sy, pr, 0, Math.PI * 2);
+      ctx.fillStyle = loc.color;
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Label above pin
+      ctx.font = `bold ${Math.max(10, 11 * zoom)}px Manrope, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(0,0,0,0.5)';
+      ctx.fillText(loc.label, p.sx + 1, p.sy - pr * 1.8 + 1);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(loc.label, p.sx, p.sy - pr * 1.8);
+    });
+  }
+
+  // ── MAIN DRAW ───────────────────────────────────────────
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // Dark bg circle
+    ctx.beginPath();
+    ctx.arc(cx, cy, R * zoom * 1.12, 0, Math.PI * 2);
+    ctx.fillStyle = '#050d1a';
+    ctx.fill();
+
+    drawGlobe();
+    drawAtmosphere();
+    drawPins();
+  }
+
+  // ── ANIMATION LOOP ──────────────────────────────────────
+  function loop() {
+    requestAnimationFrame(loop);
+    animFrame.t++;
+    if (!isDragging) {
+      velX *= 0.92;
+      velY *= 0.92;
+      rotX += velX;
+      rotY += velY;
+      rotX = Math.max(-Math.PI/2.2, Math.min(Math.PI/2.2, rotX));
+    }
+    draw();
+  }
+  loop();
+
+  // ── DRAG ────────────────────────────────────────────────
+  function onDown(x, y) {
+    isDragging = true; prevX = x; prevY = y;
+    velX = 0; velY = 0;
+  }
+  function onMove(x, y) {
+    if (!isDragging) return;
+    const dx = x - prevX, dy = y - prevY;
+    rotY += dx * 0.005;
+    rotX += dy * 0.005;
+    rotX = Math.max(-Math.PI/2.2, Math.min(Math.PI/2.2, rotX));
+    velY = dx * 0.005; velX = dy * 0.005;
+    prevX = x; prevY = y;
+  }
+  function onUp() { isDragging = false; }
+
+  canvas.addEventListener('mousedown', e => onDown(e.clientX, e.clientY));
+  window.addEventListener('mousemove',  e => { if(isDragging) onMove(e.clientX, e.clientY); });
+  window.addEventListener('mouseup',    onUp);
+
+  canvas.addEventListener('touchstart', e => {
+    if (e.touches.length === 1) {
+      onDown(e.touches[0].clientX, e.touches[0].clientY);
+    } else if (e.touches.length === 2) {
+      isDragging = false;
+      pinchDist0 = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
+                              e.touches[0].clientY - e.touches[1].clientY);
+      zoom0 = zoom;
+    }
+  }, { passive: true });
+  canvas.addEventListener('touchmove', e => {
+    if (e.touches.length === 1) {
+      onMove(e.touches[0].clientX, e.touches[0].clientY);
+    } else if (e.touches.length === 2) {
+      const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
+                           e.touches[0].clientY - e.touches[1].clientY);
+      zoom = Math.max(0.8, Math.min(3, zoom0 * d / pinchDist0));
+    }
+  }, { passive: true });
+  canvas.addEventListener('touchend', onUp);
+
+  // Scroll to zoom (desktop)
+  canvas.addEventListener('wheel', e => {
+    e.preventDefault();
+    zoom = Math.max(0.8, Math.min(3, zoom - e.deltaY * 0.001));
+  }, { passive: false });
+
+  // ── HOVER & CLICK ───────────────────────────────────────
+  function getHitPin(ex, ey) {
     const rect = canvas.getBoundingClientRect();
-    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-    mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-    raycaster.setFromCamera(mouse, camera);
-    const hits = raycaster.intersectObjects(pinMeshes);
-    const label = document.getElementById('pin-label');
-    if (hits.length > 0 && hits[0].object.userData.tag) {
-      const loc = hits[0].object.userData;
-      document.getElementById('label-name').textContent = loc.label;
-      document.getElementById('label-count').textContent = loc.count + ' puntate';
-      label.classList.add('visible');
+    const mx = ex - rect.left, my = ey - rect.top;
+    let best = null, bestD = 28 * zoom; // hit area radius
+    LOCATIONS.forEach(loc => {
+      const p = project(loc.lat, loc.lon);
+      if (p.z < 0) return;
+      const d = Math.hypot(p.sx - mx, p.sy - my);
+      if (d < bestD) { bestD = d; best = loc; }
+    });
+    return best;
+  }
+
+  canvas.addEventListener('mousemove', e => {
+    const hit = getHitPin(e.clientX, e.clientY);
+    if (hit) {
+      labelName.textContent  = hit.label;
+      labelCount.textContent = hit.count + ' puntate';
+      pinLabel.classList.add('visible');
       canvas.style.cursor = 'pointer';
     } else {
-      label.classList.remove('visible');
+      pinLabel.classList.remove('visible');
       canvas.style.cursor = isDragging ? 'grabbing' : 'grab';
     }
   });
 
-  // ── FILTER LOGIC ────────────────────────────────────────
+  canvas.addEventListener('click', e => {
+    const hit = getHitPin(e.clientX, e.clientY);
+    if (hit) selectTag(hit.tag, hit.label, hit.count);
+  });
+
+  // ── FILTER ──────────────────────────────────────────────
   const noResults = document.getElementById('no-results');
-
-  function selectTag(tag, label, count) {
-    activeTag = tag;
-    document.getElementById('filter-text').textContent = '📍 ' + label + ' — ' + count + ' puntate';
-    document.getElementById('active-filter').classList.add('visible');
-    filterItems(tag);
-    // Scroll to list
-    document.querySelector('main').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  function clearFilter() {
-    activeTag = null;
-    document.getElementById('active-filter').classList.remove('visible');
-    filterItems(null);
-  }
-  window.clearFilter = clearFilter;
-
-  const keywordsMap = {
-    brasile: ['brasile', 'brasil', 'rio', 'sao paulo'],
-    colombia: ['colombia', 'bogota', 'cartagena', 'santa marta', 'cali', 'medellin', 'providencia', 'san andres'],
-    rica: ['costa rica', 'costarica'],
-    panama: ['panama'],
-    messico: ['messico', 'mexico', 'oaxaca', 'yucatan', 'holbox', 'escondido'],
-    berlino: ['berlino', 'berlin', 'germany', 'germania'],
-    amsterdam: ['amsterdam'],
-    croazia: ['croazia', 'hvar', 'croatia', 'stari grad'],
-  };
-
   function filterItems(tag) {
     let visible = 0;
     items.forEach(li => {
       if (!tag) { li.style.display = ''; visible++; return; }
-      const search = (li.dataset.search || '').toLowerCase();
-      const show = (keywordsMap[tag] || [tag]).some(k => search.includes(k));
+      const s = (li.dataset.search || '').toLowerCase();
+      const show = (keywordsMap[tag]||[tag]).some(k => s.includes(k));
       li.style.display = show ? '' : 'none';
       if (show) visible++;
     });
     noResults.style.display = visible === 0 ? 'block' : 'none';
   }
+  function selectTag(tag, label, count) {
+    document.getElementById('filter-text').textContent = '📍 ' + label + ' — ' + count + ' puntate';
+    document.getElementById('active-filter').classList.add('visible');
+    filterItems(tag);
+    document.querySelector('main').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function clearFilter() {
+    document.getElementById('active-filter').classList.remove('visible');
+    filterItems(null);
+  }
+  window.clearFilter = clearFilter;
 
   // ── SORT ────────────────────────────────────────────────
-  const sortBtn = document.getElementById('sort-btn');
+  const sortBtn  = document.getElementById('sort-btn');
   const sortIcon = document.getElementById('sort-icon');
-  const list = document.getElementById('ep-list');
+  const list     = document.getElementById('ep-list');
   let sortAsc = true;
-
-  // Default: oldest first
   sortIcon.style.transform = 'rotate(180deg)';
-  [...items].sort((a, b) => a.dataset.date.localeCompare(b.dataset.date))
-    .forEach(li => list.appendChild(li));
-
+  [...items].sort((a,b) => a.dataset.date.localeCompare(b.dataset.date)).forEach(li => list.appendChild(li));
   sortBtn.addEventListener('click', () => {
     sortAsc = !sortAsc;
     sortIcon.style.transform = sortAsc ? 'rotate(180deg)' : '';
-    [...items].sort((a, b) =>
-      sortAsc ? a.dataset.date.localeCompare(b.dataset.date)
-              : b.dataset.date.localeCompare(a.dataset.date)
+    [...items].sort((a,b) => sortAsc
+      ? a.dataset.date.localeCompare(b.dataset.date)
+      : b.dataset.date.localeCompare(a.dataset.date)
     ).forEach(li => list.appendChild(li));
-  });
-
-  // ── ANIMATE ─────────────────────────────────────────────
-  const clock = new THREE.Clock();
-  function animate() {
-    requestAnimationFrame(animate);
-    const t = clock.getElapsedTime();
-
-    // Inertia
-    if (!isDragging) {
-      globeG.rotation.y += rotVel.y;
-      globeG.rotation.x += rotVel.x;
-      globeG.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, globeG.rotation.x));
-      rotVel.x *= 0.92;
-      rotVel.y *= 0.92;
-      // No auto-rotation
-    }
-
-    // Pulse rings
-    pinGroup.children.forEach(child => {
-      if (child.userData.isRing) {
-        const pulse = 0.7 + 0.3 * Math.sin(t * 2 + child.userData.phase);
-        child.material.opacity = pulse * 0.5;
-        const s = 1 + 0.2 * Math.sin(t * 2 + child.userData.phase);
-        child.scale.setScalar(s);
-      }
-    });
-
-    renderer.render(scene, camera);
-  }
-  animate();
-
-  // Resize
-  window.addEventListener('resize', () => {
-    renderer.setSize(W(), H());
   });
   </script>
 
