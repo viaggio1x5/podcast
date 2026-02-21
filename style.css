@@ -61,6 +61,18 @@ body {
 }
 .site-header__nav a:hover { color: var(--accent); border-color: var(--accent); }
 
+.nav-icon-btn {
+  width: 34px !important;
+  height: 34px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50% !important;
+  color: var(--muted);
+}
+.nav-icon-btn:hover { color: var(--accent) !important; border-color: var(--accent) !important; }
+
 /* ── HERO ──────────────────────────────────────────────── */
 .hero {
   display: flex;

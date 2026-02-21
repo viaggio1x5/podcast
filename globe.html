@@ -3,18 +3,283 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Viaggio a 1.5x — Podcast di viaggi autentici</title>
-  <meta name="description" content="Dove andiamo? Ascolta Viaggio a 1.5x, il podcast di viaggi autentici di Caterina Finelli.">
-  <link rel="canonical" href="https://viaggio1x5.github.io/podcast/">
-  <link rel="stylesheet" href="style.css">
+  <title>Viaggio a 1.5x — Esplora il Mondo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0e1a;
+      --card: #111827;
+      --border: #1e2d45;
+      --text: #f0f4ff;
+      --muted: #6b7fa3;
+      --accent: #3b82f6;
+      --accent-glow: rgba(59,130,246,0.3);
+      --font: 'Manrope', sans-serif;
+      --pad: clamp(1.2rem, 4vw, 3rem);
+    }
+    html { font-size: 16px; overflow-x: hidden; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* HEADER */
+    .site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem var(--pad);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(10,14,26,0.92);
+      backdrop-filter: blur(12px);
+      z-index: 50;
+    }
+    .site-header__logo {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: -0.01em;
+    }
+    .site-header__logo strong { color: var(--text); font-weight: 800; }
+    .site-header__nav {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .site-header__nav a {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-decoration: none;
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 0.35rem 0.9rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .site-header__nav a:hover { border-color: var(--accent); color: var(--text); }
+    .nav-globe-btn {
+      width: 34px; height: 34px;
+      border: 1.5px solid var(--border) !important;
+      border-radius: 50% !important;
+      padding: 0 !important;
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent) !important;
+      border-color: var(--accent) !important;
+    }
+    .nav-globe-btn svg { width: 16px; height: 16px; }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 2rem var(--pad) 0;
+    }
+    .hero__title {
+      font-size: clamp(1.6rem, 5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #f0f4ff 0%, #93c5fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.4rem;
+    }
+    .hero__sub {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+
+    /* GLOBE CONTAINER */
+    #globe-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      aspect-ratio: 1;
+      cursor: grab;
+    }
+    #globe-wrap:active { cursor: grabbing; }
+    #globe-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* ACTIVE PIN LABEL */
+    #pin-label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    #pin-label.visible { opacity: 1; }
+    #pin-label .label-name {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #fff;
+      text-shadow: 0 2px 20px rgba(59,130,246,0.8);
+      letter-spacing: -0.02em;
+    }
+    #pin-label .label-count {
+      font-size: 0.7rem;
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    /* HINT */
+    .globe-hint {
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.03em;
+    }
+
+    /* ACTIVE FILTER BADGE */
+    #active-filter {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0 var(--pad) 1rem;
+      background: var(--accent-glow);
+      border: 1px solid var(--accent);
+      border-radius: 30px;
+      padding: 0.4rem 1rem;
+      width: fit-content;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      cursor: pointer;
+    }
+    #active-filter.visible { display: flex; }
+    #active-filter .clear { opacity: 0.6; font-size: 0.9rem; }
+
+    /* SORT */
+    .list-controls {
+      display: flex;
+      align-items: center;
+      padding: 0.6rem var(--pad);
+      border-top: 1px solid var(--border);
+      gap: 0.75rem;
+    }
+    .sort-btn {
+      width: 36px; height: 36px;
+      border: 1.5px solid var(--border);
+      border-radius: 50%;
+      background: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted);
+      transition: border-color 0.15s, color 0.15s;
+      flex-shrink: 0;
+    }
+    .sort-btn:hover { border-color: var(--accent); color: var(--accent); }
+    #sort-icon { transition: transform 0.3s; }
+
+    /* EPISODE LIST */
+    main { flex: 1; }
+    .ep-list {
+      list-style: none;
+      border-top: 1px solid var(--border);
+    }
+    .ep-list li {
+      border-bottom: 1px solid var(--border);
+      padding: 1rem var(--pad);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      transition: background 0.15s;
+    }
+    .ep-list li:hover { background: var(--card); }
+    .ep-list .date {
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+    }
+    .ep-list a {
+      font-size: 0.97rem;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      line-height: 1.35;
+      letter-spacing: -0.01em;
+      transition: color 0.15s;
+    }
+    .ep-list a:hover { color: var(--accent); }
+    .ep-list .badge {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      display: none;
+    }
+    .no-results {
+      text-align: center;
+      padding: 3rem var(--pad);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    /* FOOTER */
+    .ep-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.3rem var(--pad);
+      border-top: 1px solid var(--border);
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .ep-footer__copy { display: flex; flex-direction: column; gap: 0.15rem; }
+    .ep-footer__copy strong { font-size: 0.82rem; font-weight: 800; color: var(--text); }
+    .ep-footer__copy span { font-size: 0.65rem; color: var(--muted); font-weight: 500; }
+    .ep-footer__social { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; }
+    .ep-social-link {
+      width: 34px; height: 34px;
+      border: 1.5px solid var(--border);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .ep-social-link svg { width: 14px; height: 14px; fill: currentColor; }
+    .ep-social-link:hover { color: var(--accent); border-color: var(--accent); }
+
+    @media (max-width: 640px) {
+      .ep-footer { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    }
+  </style>
 </head>
 <body>
 
   <header class="site-header">
     <div class="site-header__logo">Viaggio a <strong>1.5x</strong></div>
     <nav class="site-header__nav">
-      <a href="globe.html" class="nav-icon-btn" title="Vista globo">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      <a href="index.html" class="nav-globe-btn" title="Vista lista">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
       </a>
       <a href="https://linktr.ee/viaggio1x5" target="_blank" rel="noopener">About</a>
     </nav>
@@ -22,24 +287,31 @@
 
   <section class="hero">
     <h1 class="hero__title">Dove vorresti andare?</h1>
-    <div class="tags-section">
-      <a href="#" class="tag" data-tag="brasile">Brasile</a>
-      <a href="#" class="tag" data-tag="colombia">Colombia</a>
-      <a href="#" class="tag" data-tag="rica">Costarica</a>
-      <a href="#" class="tag" data-tag="panama">Panamá</a>
-      <a href="#" class="tag" data-tag="messico">Messico</a>
-      <a href="#" class="tag" data-tag="berlino">Berlino</a>
-      <a href="#" class="tag" data-tag="amsterdam">Amsterdam</a>
-      <a href="#" class="tag" data-tag="croazia">Croazia</a>
-    </div>
+    <p class="hero__sub">Ruota il globo e clicca su una destinazione</p>
   </section>
 
+  <div id="globe-wrap">
+    <canvas id="globe-canvas"></canvas>
+    <div id="pin-label">
+      <div class="label-name" id="label-name"></div>
+      <div class="label-count" id="label-count"></div>
+    </div>
+  </div>
+
+  <p class="globe-hint">↑ trascina per ruotare · clicca per filtrare</p>
+
   <main>
+    <div id="active-filter" onclick="clearFilter()">
+      <span id="filter-text"></span>
+      <span class="clear">✕</span>
+    </div>
+
     <div class="list-controls">
       <button id="sort-btn" class="sort-btn" title="Ordina per data">
         <svg id="sort-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="5 12 12 5 19 12"/></svg>
       </button>
     </div>
+
     <ul class="ep-list" id="ep-list">
   <li data-search="viaggiare in bus da stari grad a hvar, con čazmatrans. città vecchia, lesina, croazia. come viaggiare da stari grad a hvar, in croazia? certo, sembra facile quanto prendere un bus, ma quando ci ho provato, qualcosa è andato storto. tutti i mezzi pubblici che attraversano l&#x27;isola sono čazmatrans, la gloriosa azienda di trasporti locale che aggiunge un tocco di mistero e avventura a ogni viaggio a hvar. ecco perché insomma, vale la pena di parlarne. buon ascolto, e buon viaggio! 🇭🇷 stari grad - hvar. isola di lesina, croazia. 🟢 mappa: https://www.google.com/maps/d/u/0/edit?mid=1inrkquksl6vuprnefgyzsttcydn7kr8&amp;amp;usp=sharing 🟡 instagram: http://www.instagram.com/viaggio1x5 🟣 contatti: ⁠⁠https://linktr.ee/viaggio1x5 #viaggioincroazia #hvar #mareadriatico #cazmatrans #viaggiarelowcost #podcastdiviaggio #bus #trasporti ora, dove sta, diciamo, l&amp;#x27;elemento esplosivo, l&amp;#x27;elemento incognito? sta nel fatto che le stazioni dell&amp;#x27;autobus, quindi gli stop, non sono segnati, quindi non c&amp;#x27;è l&amp;#x27;indirizzo. viaggiamo per sorprenderci, vero? però poi torniamo a casa e ci accorgiamo che la fotografia che abbiamo scattato è identica a quella che c&amp;#x27;è su google immagini. io lo chiamo il trappolone dei viaggi clone. ecco perché la mia mappa sono state le persone. ed ecco perché quello che ascolterai non è un diario di viaggio perfetto. alla fine i viaggi con quelle liste delle 10 cose da fare sono tutti uguali. mentre il bello di viaggiare è tornare a casa con dei ricordi veramente tuoi. nel bene, ma soprattutto nel male. io sono caterina e questo è viaggio a 1.5. un podcast dove ascolterai come andare per davvero in giro per l&amp;#x27;europa con lo zaino sulle spalle. tutta la verità, minuto per minuto, un messaggio vocale alla volta. ci sei? andiamo! ma comunque ti avevo promesso di raccontarti come si fa ad andare da starygrad a hvar, che è il prossimo, la prossima tappa, perché io da lì poi vado dritta tutto il mese d&amp;#x27;agosto a verre. che non succeda qualcos&amp;#x27;altro perché non si può mai dire. ebbene, se tu googli questa chiave, queste keywords, starigrad hvar bus, ti troverai su un glorioso sito web. questo sito web, che adesso vado subito a cliccare in real time, si chiama kazzmatrans.hr. tu dirai, sarà forse un ufficio di collocamento? la risposta è non credo proprio. casmatrans che in realtà non si legge così se come paranada perché c&amp;#x27;è un segno c&amp;#x27;è un accento dovrebbe forse essere casmatrans raga non lo so credo che sia casmatrans a noi fa ridere lo diremo così comunque questo sito casmatrans si occupa del trans quindi del transito attraverso l&amp;#x27;isola e forse addirittura oltre l&amp;#x27;isola quindi se tu vai su questo sito scoprirai presto che non solo c&amp;#x27;è un&amp;#x27;app che puoi scaricare e che non funzionerà, te lo dico già in anteprima, ma c&amp;#x27;è addirittura un motore di ricerca dove tu inserendo la origine e la destinazione che vorresti percorrere ti darà zero risultati. e quindi cosa hanno fatto? perché loro sono sul pezzo, lo si vede già da come è organizzato il sito responsive, sì sicuramente. del 1996, cosa hanno fatto? hanno detto clicca qui e scaricati il pdf e così la smetti. il pdf tra l&amp;#x27;altro non è un pdf di quelli creati in pdf ma è semplicemente la fotocopia di un documento che già esisteva in qualche vita precedente sotto forma di carta, quindi quando te lo vai a scaricare ovviamente trovi le linee che sono ondulate perché ovviamente ha piattato dal coperchio della fotocopiatrice e financo segni di penna e impronte digitali e questo fa veramente decollare perché per il mestiere che faccio io sarebbe qualche cosa di inaudito no proprio che meriterebbe l&amp;#x27;inferno e invece no quindi in questo sito ti scarichi questo bel microsoft word pdf e trovi l&amp;#x27;orario che ditti dirà appunto che c&amp;#x27;è un autobus che da starigrad grada arriva, stavo per dire, a terra. cerchiamo di rimanere nel nostro. a terra a hvar, con tutta una serie di orari di partenza, ora, dove sta, diciamo," data-audio="https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/68013437/7_catzmatrans.mp3" data-date="20251005">
     <span class="date">05 Ott 2025</span>
@@ -887,124 +1159,351 @@
     
   </li>
     </ul>
+
+
     <p class="no-results" id="no-results" style="display:none">Nessuna puntata trovata.</p>
   </main>
 
   <footer class="ep-footer">
     <div class="ep-footer__copy">
       <strong>Viaggio a 1.5x</strong>
-      <span>un podcast di Caterina Finelli &nbsp;&middot;&nbsp; Copyright 2026</span>
+      <span>un podcast di Caterina Finelli &nbsp;·&nbsp; Copyright 2026</span>
     </div>
     <div class="ep-footer__social">
-      <a href="https://t.me/viaggibellissimi" class="ep-social-link ep-social-telegram" target="_blank" rel="noopener" title="Telegram"><svg viewBox="0 0 24 24"><path d="M21.8 2.1L1.5 9.9c-1.3.5-1.3 1.3-.2 1.6l5.1 1.6 1.9 5.8c.2.7.3.9 1 .9.5 0 .8-.2 1.1-.5l2.7-2.6 5.2 3.9c1 .5 1.7.3 1.9-.9l3.5-16.5c.3-1.3-.5-1.9-1.9-1.2z"/></svg></a>
-      <a href="mailto:viaggio1x5@gmail.com" class="ep-social-link ep-social-email" title="Email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
-      <a href="https://instagram.com/viaggio1x5" class="ep-social-link ep-social-instagram" target="_blank" rel="noopener" title="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 3.3.2 4.8 1.7 5 5 .1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.2 3.3-1.7 4.8-5 5-1.3.1-1.6.1-4.9.1s-3.6 0-4.8-.1c-3.3-.2-4.8-1.7-5-5C2.1 15.5 2 15.2 2 12s0-3.6.1-4.8C2.3 3.9 3.8 2.4 7.1 2.3c1.3-.1 1.6-.1 4.9-.1zm0-2.2C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7C8.3 24 8.7 24 12 24s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9C23.7 2.7 21.3.3 16.9.1 15.7 0 15.3 0 12 0zm0 5.8a6.2 6.2 0 100 12.4A6.2 6.2 0 0012 5.8zM12 16a4 4 0 110-8 4 4 0 010 8zm6.4-11.9a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z"/></svg></a>
-      <a href="https://open.spotify.com/show/1cq8m7aBTqgd2HDckwGHvg" class="ep-social-link ep-social-spotify" target="_blank" rel="noopener" title="Spotify"><svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.52 17.28c-.24.36-.66.48-1.02.24-2.82-1.74-6.36-2.1-10.56-1.14-.42.12-.78-.18-.9-.54-.12-.42.18-.78.54-.9 4.56-1.02 8.52-.6 11.64 1.32.42.18.48.66.3 1.02zm1.44-3.3c-.3.42-.84.54-1.26.24-3.24-1.98-8.16-2.58-11.94-1.38-.48.12-.99-.12-1.11-.6-.12-.48.12-.99.6-1.11 4.38-1.32 9.78-.66 13.5 1.62.36.18.54.78.21 1.23zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.3c-.6.18-1.2-.18-1.38-.78-.18-.6.18-1.2.78-1.38 4.26-1.26 11.28-1.02 15.72 1.62.54.3.72 1.02.42 1.56-.3.42-1.02.6-1.56.3z"/></svg></a>
-      <a href="https://podcasts.apple.com/it/podcast/viaggio-a-1-5x-dal-brasile-a-berlino/id1734261355" class="ep-social-link ep-social-apple" target="_blank" rel="noopener" title="Apple Podcasts"><svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm0 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm0 2a8 8 0 100 16A8 8 0 0012 4zm0 2a6 6 0 110 12A6 6 0 0112 6zm0 2a4 4 0 100 8 4 4 0 000-8zm0 2a2 2 0 110 4 2 2 0 010-4zm3.5 7.5a1 1 0 110 2 1 1 0 010-2z"/></svg></a>
+      <a href="https://t.me/viaggibellissimi" class="ep-social-link" target="_blank" rel="noopener" title="Telegram"><svg viewBox="0 0 24 24"><path d="M21.8 2.1L1.5 9.9c-1.3.5-1.3 1.3-.2 1.6l5.1 1.6 1.9 5.8c.2.7.3.9 1 .9.5 0 .8-.2 1.1-.5l2.7-2.6 5.2 3.9c1 .5 1.7.3 1.9-.9l3.5-16.5c.3-1.3-.5-1.9-1.9-1.2z"/></svg></a>
+      <a href="mailto:viaggio1x5@gmail.com" class="ep-social-link" title="Email"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+      <a href="https://instagram.com/viaggio1x5" class="ep-social-link" target="_blank" rel="noopener" title="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 3.3.2 4.8 1.7 5 5 .1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.2 3.3-1.7 4.8-5 5-1.3.1-1.6.1-4.9.1s-3.6 0-4.8-.1c-3.3-.2-4.8-1.7-5-5C2.1 15.5 2 15.2 2 12s0-3.6.1-4.8C2.3 3.9 3.8 2.4 7.1 2.3c1.3-.1 1.6-.1 4.9-.1zm0-2.2C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7C8.3 24 8.7 24 12 24s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9C23.7 2.7 21.3.3 16.9.1 15.7 0 15.3 0 12 0zm0 5.8a6.2 6.2 0 100 12.4A6.2 6.2 0 0012 5.8zM12 16a4 4 0 110-8 4 4 0 010 8zm6.4-11.9a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z"/></svg></a>
+      <a href="https://open.spotify.com/show/1cq8m7aBTqgd2HDckwGHvg" class="ep-social-link" target="_blank" rel="noopener" title="Spotify"><svg viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.52 17.28c-.24.36-.66.48-1.02.24-2.82-1.74-6.36-2.1-10.56-1.14-.42.12-.78-.18-.9-.54-.12-.42.18-.78.54-.9 4.56-1.02 8.52-.6 11.64 1.32.42.18.48.66.3 1.02zm1.44-3.3c-.3.42-.84.54-1.26.24-3.24-1.98-8.16-2.58-11.94-1.38-.48.12-.99-.12-1.11-.6-.12-.48.12-.99.6-1.11 4.38-1.32 9.78-.66 13.5 1.62.36.18.54.78.21 1.23zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.3c-.6.18-1.2-.18-1.38-.78-.18-.6.18-1.2.78-1.38 4.26-1.26 11.28-1.02 15.72 1.62.54.3.72 1.02.42 1.56-.3.42-1.02.6-1.56.3z"/></svg></a>
+      <a href="https://podcasts.apple.com/it/podcast/viaggio-a-1-5x-dal-brasile-a-berlino/id1734261355" class="ep-social-link" target="_blank" rel="noopener" title="Apple Podcasts"><svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm0 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm0 2a8 8 0 100 16A8 8 0 0012 4zm0 2a6 6 0 110 12A6 6 0 0112 6zm0 2a4 4 0 100 8 4 4 0 000-8zm0 2a2 2 0 110 4 2 2 0 010-4zm3.5 7.5a1 1 0 110 2 1 1 0 010-2z"/></svg></a>
     </div>
   </footer>
 
-  <div class="mini-player" id="mini-player">
-    <div class="mini-player__info">
-      <span class="mini-player__title" id="mini-title"></span>
-      <button class="mini-player__close" id="mini-close">✕</button>
-    </div>
-    <audio id="mini-audio" controls></audio>
-  </div>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script>
-    const items = Array.from(document.querySelectorAll('.ep-list li'));
-    const noResults = document.getElementById('no-results');
-    const sortBtn = document.getElementById('sort-btn');
-    const sortIcon = document.getElementById('sort-icon');
-    const list = document.getElementById('ep-list');
-    const miniPlayer = document.getElementById('mini-player');
-    const miniAudio = document.getElementById('mini-audio');
-    const miniTitle = document.getElementById('mini-title');
-    const miniClose = document.getElementById('mini-close');
-    let sortAsc = true;
+  // ── LOCATIONS ───────────────────────────────────────────
+  const LOCATIONS = [
+    { tag: 'brasile',  label: 'Brasile',   lat: -15,  lon: -47,  color: '#22c55e' },
+    { tag: 'colombia', label: 'Colombia',  lat:  4,   lon: -74,  color: '#f59e0b' },
+    { tag: 'rica',     label: 'Costarica', lat:  9.7, lon: -83.8,color: '#10b981' },
+    { tag: 'panama',   label: 'Panamá',    lat:  8.9, lon: -79.5,color: '#f97316' },
+    { tag: 'messico',  label: 'Messico',   lat: 19.4, lon: -99.1,color: '#ec4899' },
+    { tag: 'berlino',  label: 'Berlino',   lat: 52.5, lon: 13.4, color: '#3b82f6' },
+    { tag: 'amsterdam',label: 'Amsterdam', lat: 52.4, lon: 4.9,  color: '#8b5cf6' },
+    { tag: 'croazia',  label: 'Croazia',   lat: 45.1, lon: 15.2, color: '#06b6d4' },
+  ];
 
-    function filterItems(titleOnly, q) {
-      let visible = 0;
-      items.forEach(li => {
-        const haystack = titleOnly
-          ? li.querySelector('a').textContent.toLowerCase()
-          : (li.dataset.search || '');
-        const show = !q || haystack.includes(q);
-        li.style.display = show ? '' : 'none';
-        if (show) visible++;
-      });
-      noResults.style.display = visible === 0 ? 'block' : 'none';
+  // ── THREE.JS GLOBE ──────────────────────────────────────
+  const wrap = document.getElementById('globe-wrap');
+  const canvas = document.getElementById('globe-canvas');
+  const W = () => wrap.clientWidth;
+  const H = () => wrap.clientHeight;
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(W(), H());
+  renderer.setClearColor(0x000000, 0);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+  camera.position.z = 2.8;
+
+  // Globe
+  const geo = new THREE.SphereGeometry(1, 64, 64);
+
+  // Earth texture
+  const loader = new THREE.TextureLoader();
+  const earthTex = loader.load(
+    'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Land_ocean_ice_cloud_2048.jpg/2048px-Land_ocean_ice_cloud_2048.jpg'
+  );
+  const oceanMat = new THREE.MeshPhongMaterial({
+    map: earthTex,
+    shininess: 20,
+    specular: 0x112233,
+  });
+  const ocean = new THREE.Mesh(geo, oceanMat);
+  scene.add(ocean);
+
+  // Wireframe grid overlay
+  const wireGeo = new THREE.SphereGeometry(1.002, 24, 16);
+  const wireMat = new THREE.MeshBasicMaterial({
+    color: 0x1e3a5f,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.06,
+  });
+  scene.add(new THREE.Mesh(wireGeo, wireMat));
+
+  // Atmosphere glow
+  const atmGeo = new THREE.SphereGeometry(1.08, 32, 32);
+  const atmMat = new THREE.MeshBasicMaterial({
+    color: 0x1d4ed8,
+    transparent: true,
+    opacity: 0.08,
+    side: THREE.BackSide,
+  });
+  scene.add(new THREE.Mesh(atmGeo, atmMat));
+
+  // Lights
+  scene.add(new THREE.AmbientLight(0x334466, 1.2));
+  const sun = new THREE.DirectionalLight(0x6699ff, 1.8);
+  sun.position.set(5, 3, 5);
+  scene.add(sun);
+
+  // Helper: lat/lon → 3D point on sphere
+  function latLonToVec3(lat, lon, r = 1) {
+    const phi = (90 - lat) * Math.PI / 180;
+    const theta = (lon + 180) * Math.PI / 180;
+    return new THREE.Vector3(
+      -r * Math.sin(phi) * Math.cos(theta),
+       r * Math.cos(phi),
+       r * Math.sin(phi) * Math.sin(theta)
+    );
+  }
+
+  // Count episodes per tag
+  const items = Array.from(document.querySelectorAll('.ep-list li'));
+  function countForTag(tag) {
+    return items.filter(li => {
+      const search = (li.dataset.search || '').toLowerCase();
+      const href = (li.querySelector('a')?.getAttribute('href') || '').toLowerCase();
+      // Use keyword matching similar to index
+      const keywords = {
+        brasile: ['brasile', 'brasil', 'rio', 'sao paulo'],
+        colombia: ['colombia', 'bogota', 'cartagena', 'santa marta', 'cali', 'medellin', 'providencia', 'san andres'],
+        rica: ['costa rica', 'costarica'],
+        panama: ['panama'],
+        messico: ['messico', 'mexico', 'oaxaca', 'yucatan', 'holbox', 'escondido'],
+        berlino: ['berlino', 'berlin', 'germany', 'germania'],
+        amsterdam: ['amsterdam'],
+        croazia: ['croazia', 'hvar', 'croatia', 'stari grad'],
+      };
+      return (keywords[tag] || [tag]).some(k => search.includes(k));
+    }).length;
+  }
+
+  // Create pins
+  const pinGroup = new THREE.Group();
+  scene.add(pinGroup);
+  const pinMeshes = [];
+
+  LOCATIONS.forEach(loc => {
+    const pos = latLonToVec3(loc.lat, loc.lon, 1.01);
+    const count = countForTag(loc.tag);
+
+    // Pin sphere
+    const pinGeo = new THREE.SphereGeometry(0.025, 12, 12);
+    const pinMat = new THREE.MeshBasicMaterial({ color: loc.color });
+    const pin = new THREE.Mesh(pinGeo, pinMat);
+    pin.position.copy(pos);
+    pin.userData = { ...loc, count };
+    pinGroup.add(pin);
+    pinMeshes.push(pin);
+
+    // Pulse ring
+    const ringGeo = new THREE.RingGeometry(0.032, 0.045, 16);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: loc.color, transparent: true, opacity: 0.5, side: THREE.DoubleSide
+    });
+    const ring = new THREE.Mesh(ringGeo, ringMat);
+    ring.position.copy(pos.clone().multiplyScalar(1.012));
+    ring.lookAt(pos.clone().multiplyScalar(2));
+    ring.userData.isRing = true;
+    ring.userData.phase = Math.random() * Math.PI * 2;
+    pinGroup.add(ring);
+  });
+
+  // Globe group for rotation
+  const globeGroup = new THREE.Group();
+  globeGroup.add(ocean);
+  globeGroup.add(wireGeo.uuid ? new THREE.Mesh(wireGeo, wireMat) : scene.children[1]);
+  scene.remove(ocean);
+  // rebuild cleanly
+  scene.clear();
+  const globeG = new THREE.Group();
+  scene.add(globeG);
+
+  const ocean2 = new THREE.Mesh(new THREE.SphereGeometry(1, 64, 64), oceanMat);
+  globeG.add(ocean2);
+  globeG.add(new THREE.Mesh(new THREE.SphereGeometry(1.002, 24, 16), wireMat));
+  globeG.add(new THREE.Mesh(new THREE.SphereGeometry(1.08, 32, 32), atmMat));
+  globeG.add(pinGroup);
+  scene.add(new THREE.AmbientLight(0x334466, 1.2));
+  scene.add(sun);
+
+  // ── INTERACTION ─────────────────────────────────────────
+  let isDragging = false;
+  let prevMouse = { x: 0, y: 0 };
+  let rotVel = { x: 0, y: 0 };
+  let activeTag = null;
+
+  canvas.addEventListener('mousedown', e => {
+    isDragging = true;
+    prevMouse = { x: e.clientX, y: e.clientY };
+    rotVel = { x: 0, y: 0 };
+  });
+  canvas.addEventListener('touchstart', e => {
+    isDragging = true;
+    prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    rotVel = { x: 0, y: 0 };
+  }, { passive: true });
+
+  window.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    const dx = e.clientX - prevMouse.x;
+    const dy = e.clientY - prevMouse.y;
+    globeG.rotation.y += dx * 0.008;
+    globeG.rotation.x += dy * 0.008;
+    globeG.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, globeG.rotation.x));
+    rotVel = { x: dy * 0.004, y: dx * 0.004 };
+    prevMouse = { x: e.clientX, y: e.clientY };
+  });
+  window.addEventListener('touchmove', e => {
+    if (!isDragging) return;
+    const dx = e.touches[0].clientX - prevMouse.x;
+    const dy = e.touches[0].clientY - prevMouse.y;
+    globeG.rotation.y += dx * 0.008;
+    globeG.rotation.x += dy * 0.008;
+    globeG.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, globeG.rotation.x));
+    rotVel = { x: dy * 0.004, y: dx * 0.004 };
+    prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  }, { passive: true });
+
+  window.addEventListener('mouseup', () => { isDragging = false; });
+  window.addEventListener('touchend', () => { isDragging = false; });
+
+  // Click to filter
+  const raycaster = new THREE.Raycaster();
+  const mouse = new THREE.Vector2();
+
+  canvas.addEventListener('click', e => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const hits = raycaster.intersectObjects(pinMeshes);
+    if (hits.length > 0) {
+      const loc = hits[0].object.userData;
+      if (loc.tag) selectTag(loc.tag, loc.label, loc.count);
+    }
+  });
+
+  // Hover label
+  canvas.addEventListener('mousemove', e => {
+    if (isDragging) return;
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const hits = raycaster.intersectObjects(pinMeshes);
+    const label = document.getElementById('pin-label');
+    if (hits.length > 0 && hits[0].object.userData.tag) {
+      const loc = hits[0].object.userData;
+      document.getElementById('label-name').textContent = loc.label;
+      document.getElementById('label-count').textContent = loc.count + ' puntate';
+      label.classList.add('visible');
+      canvas.style.cursor = 'pointer';
+    } else {
+      label.classList.remove('visible');
+      canvas.style.cursor = isDragging ? 'grabbing' : 'grab';
+    }
+  });
+
+  // ── FILTER LOGIC ────────────────────────────────────────
+  const noResults = document.getElementById('no-results');
+
+  function selectTag(tag, label, count) {
+    activeTag = tag;
+    document.getElementById('filter-text').textContent = '📍 ' + label + ' — ' + count + ' puntate';
+    document.getElementById('active-filter').classList.add('visible');
+    filterItems(tag);
+    // Scroll to list
+    document.querySelector('main').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function clearFilter() {
+    activeTag = null;
+    document.getElementById('active-filter').classList.remove('visible');
+    filterItems(null);
+  }
+  window.clearFilter = clearFilter;
+
+  const keywordsMap = {
+    brasile: ['brasile', 'brasil', 'rio', 'sao paulo'],
+    colombia: ['colombia', 'bogota', 'cartagena', 'santa marta', 'cali', 'medellin', 'providencia', 'san andres'],
+    rica: ['costa rica', 'costarica'],
+    panama: ['panama'],
+    messico: ['messico', 'mexico', 'oaxaca', 'yucatan', 'holbox', 'escondido'],
+    berlino: ['berlino', 'berlin', 'germany', 'germania'],
+    amsterdam: ['amsterdam'],
+    croazia: ['croazia', 'hvar', 'croatia', 'stari grad'],
+  };
+
+  function filterItems(tag) {
+    let visible = 0;
+    items.forEach(li => {
+      if (!tag) { li.style.display = ''; visible++; return; }
+      const search = (li.dataset.search || '').toLowerCase();
+      const show = (keywordsMap[tag] || [tag]).some(k => search.includes(k));
+      li.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    noResults.style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  // ── SORT ────────────────────────────────────────────────
+  const sortBtn = document.getElementById('sort-btn');
+  const sortIcon = document.getElementById('sort-icon');
+  const list = document.getElementById('ep-list');
+  let sortAsc = true;
+
+  // Default: oldest first
+  sortIcon.style.transform = 'rotate(180deg)';
+  [...items].sort((a, b) => a.dataset.date.localeCompare(b.dataset.date))
+    .forEach(li => list.appendChild(li));
+
+  sortBtn.addEventListener('click', () => {
+    sortAsc = !sortAsc;
+    sortIcon.style.transform = sortAsc ? 'rotate(180deg)' : '';
+    [...items].sort((a, b) =>
+      sortAsc ? a.dataset.date.localeCompare(b.dataset.date)
+              : b.dataset.date.localeCompare(a.dataset.date)
+    ).forEach(li => list.appendChild(li));
+  });
+
+  // ── ANIMATE ─────────────────────────────────────────────
+  const clock = new THREE.Clock();
+  function animate() {
+    requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+
+    // Inertia
+    if (!isDragging) {
+      globeG.rotation.y += rotVel.y;
+      globeG.rotation.x += rotVel.x;
+      globeG.rotation.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, globeG.rotation.x));
+      rotVel.x *= 0.92;
+      rotVel.y *= 0.92;
+      // No auto-rotation
     }
 
-    // Default sort: oldest first
-    (function() {
-      sortIcon.style.transform = 'rotate(180deg)';
-      [...items].sort((a, b) => a.dataset.date.localeCompare(b.dataset.date))
-        .forEach(li => list.appendChild(li));
-    })();
-
-    document.querySelectorAll('.tag').forEach(tag => {
-      tag.addEventListener('click', e => {
-        e.preventDefault();
-        const q = tag.dataset.tag;
-        const wasActive = tag.classList.contains('active');
-        document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
-        if (wasActive) {
-          filterItems(false, '');
-          history.replaceState(null, '', window.location.pathname);
-        } else {
-          tag.classList.add('active');
-          filterItems(true, q);
-          history.replaceState(null, '', '#' + q);
-        }
-      });
-    });
-
-    // Auto-activate tag from URL hash (e.g. index.html#croazia)
-    (function() {
-      const hash = window.location.hash.replace('#', '').toLowerCase().trim();
-      if (hash) {
-        const matchingTag = document.querySelector('.tag[data-tag="' + hash + '"]');
-        if (matchingTag) {
-          matchingTag.classList.add('active');
-          filterItems(true, hash);
-          setTimeout(() => matchingTag.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
-        }
+    // Pulse rings
+    pinGroup.children.forEach(child => {
+      if (child.userData.isRing) {
+        const pulse = 0.7 + 0.3 * Math.sin(t * 2 + child.userData.phase);
+        child.material.opacity = pulse * 0.5;
+        const s = 1 + 0.2 * Math.sin(t * 2 + child.userData.phase);
+        child.scale.setScalar(s);
       }
-    })();
-
-    sortBtn.addEventListener('click', () => {
-      sortAsc = !sortAsc;
-      sortIcon.style.transform = sortAsc ? 'rotate(180deg)' : '';
-      [...items].sort((a, b) =>
-        sortAsc ? a.dataset.date.localeCompare(b.dataset.date)
-                : b.dataset.date.localeCompare(a.dataset.date)
-      ).forEach(li => list.appendChild(li));
     });
 
-    let hoverTimer = null;
-    items.forEach(li => {
-      const anchor = li.querySelector('a');
-      const audioSrc = li.dataset.audio;
-      if (!anchor || !audioSrc) return;
-      anchor.addEventListener('mouseenter', () => {
-        hoverTimer = setTimeout(() => {
-          if (miniAudio.src !== audioSrc) {
-            miniAudio.src = audioSrc;
-            miniTitle.textContent = anchor.textContent.trim();
-          }
-          miniPlayer.classList.add('visible');
-          miniAudio.play().catch(() => {});
-        }, 600);
-      });
-      anchor.addEventListener('mouseleave', () => clearTimeout(hoverTimer));
-    });
+    renderer.render(scene, camera);
+  }
+  animate();
 
-    miniClose.addEventListener('click', () => {
-      miniAudio.pause();
-      miniPlayer.classList.remove('visible');
-    });
+  // Resize
+  window.addEventListener('resize', () => {
+    renderer.setSize(W(), H());
+  });
   </script>
 
 </body>
