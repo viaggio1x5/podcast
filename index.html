@@ -919,7 +919,7 @@
     const miniAudio = document.getElementById('mini-audio');
     const miniTitle = document.getElementById('mini-title');
     const miniClose = document.getElementById('mini-close');
-    let sortAsc = false;
+    let sortAsc = true;
 
     function filterItems(titleOnly, q) {
       let visible = 0;
@@ -934,6 +934,13 @@
       noResults.style.display = visible === 0 ? 'block' : 'none';
     }
 
+    // Default sort: oldest first
+    (function() {
+      sortIcon.style.transform = 'rotate(180deg)';
+      [...items].sort((a, b) => a.dataset.date.localeCompare(b.dataset.date))
+        .forEach(li => list.appendChild(li));
+    })();
+
     document.querySelectorAll('.tag').forEach(tag => {
       tag.addEventListener('click', e => {
         e.preventDefault();
@@ -941,12 +948,10 @@
         const wasActive = tag.classList.contains('active');
         document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
         if (wasActive) {
-          input.value = '';
           filterItems(false, '');
           history.replaceState(null, '', window.location.pathname);
         } else {
           tag.classList.add('active');
-          input.value = '';
           filterItems(true, q);
           history.replaceState(null, '', '#' + q);
         }
