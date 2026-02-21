@@ -798,19 +798,32 @@ main > .transcript p {
   background: var(--accent-light);
 }
 
-/* ── INLINE MAP CARD ─────────────────────────────────── */
-.ep-map-card {
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1.5px solid var(--border);
+/* ── MAPPA LINK (replaces Google Maps embed) ─────────── */
+.ep-mappa-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   margin: 0.75rem 0 1rem;
+  padding: 0.6rem 1.1rem;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  background: var(--bg);
+  transition: border-color .15s, color .15s, background .15s;
 }
-.ep-map-card iframe {
-  width: 100%;
-  height: 220px;
-  border: none;
-  display: block;
+.ep-mappa-link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: #f0f4ff;
 }
+.ep-mappa-link svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+.ep-mappa-link:hover svg { opacity: 1; }
 
 /* ── EPISODE PAGE: audio player ──────────────────────── */
 .ep-play-row { display: block; }
@@ -895,7 +908,6 @@ main > audio { display: none; }
     -webkit-line-clamp: 4;
     font-size: 0.95rem;
   }
-  .ep-map-card iframe { height: 175px; }
   .ep-footer { flex-direction: column; align-items: flex-start; gap: 1rem; }
   .list-controls .search-wrap { max-width: 100%; }
   main, .ep-nav, .ep-hashtags, .ep-footer { max-width: 100vw; overflow-x: hidden; }
@@ -933,6 +945,7 @@ main > audio { display: none; }
 
 /* Il bottone esiste nel DOM ma è nascosto su desktop */
 .topbar__hamburger { display: none; }
+.topbar__globe     { display: none; }
 
 @media (max-width: 700px) {
   body { padding-top: 56px; }
@@ -941,16 +954,35 @@ main > audio { display: none; }
   #topbar .topbar__pills,
   #topbar .topbar__nav { display: none !important; }
 
-  /* Mostra hamburger — margin-left:auto lo spinge a destra */
+  /* Mostra hamburger e globe — vicini, allineati a destra */
+  .topbar__globe {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: 0.2rem;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: none;
+    border: 1.5px solid var(--border);
+    border-radius: 50%;
+    cursor: pointer;
+    flex-shrink: 0;
+    color: var(--text);
+    transition: border-color .15s, color .15s;
+  }
+  .topbar__globe:hover { border-color: #aaa; }
+  .topbar__globe svg { display: block; }
   .topbar__hamburger {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 5px;
-    margin-left: auto;
-    width: 36px;
-    height: 36px;
+    gap: 3px;
+    margin-left: 0;
+    width: 32px;
+    height: 32px;
     padding: 0;
     background: none;
     border: 1.5px solid var(--border);
@@ -960,17 +992,16 @@ main > audio { display: none; }
   }
   .topbar__hamburger span {
     display: block;
-    width: 14px;
-    height: 2px;
+    width: 4px;
+    height: 4px;
     background: var(--text);
-    border-radius: 2px;
-    transition: transform .25s, opacity .2s;
-    transform-origin: center;
+    border-radius: 50%;
+    transition: opacity .2s, transform .2s;
   }
-  /* Animazione → X */
-  .topbar__hamburger.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-  .topbar__hamburger.is-open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-  .topbar__hamburger.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  /* Animazione → X quando aperto */
+  .topbar__hamburger.is-open span:nth-child(1) { transform: translateY(7px) scale(0); opacity: 0; }
+  .topbar__hamburger.is-open span:nth-child(2) { opacity: 0; transform: scale(0); }
+  .topbar__hamburger.is-open span:nth-child(3) { transform: translateY(-7px) scale(0); opacity: 0; }
 
   /* ── HERO mobile: pills come carosello orizzontale ──── */
   .hero__controls {
@@ -1044,4 +1075,31 @@ main > audio { display: none; }
   margin-top: 0.5rem;
   border-bottom: none;
   color: var(--muted);
+}
+
+/* ── EPISODE LOCATION LINK ──────────────────────────────── */
+.ep-location-link {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 1.5px solid var(--border);
+  transition: border-color 0.15s, color 0.15s;
+}
+.ep-location-link:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ── MOBILE: logo shrink fix (viewport stretta) ─────────── */
+@media (max-width: 700px) {
+  .topbar__logo {
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  #topbar {
+    overflow: hidden;
+  }
 }
