@@ -1,4 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap');
+/* DM Sans — corpo, testi, pills, link */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
+
+/* Betania Patmos — solo titoli (via jsDelivr da GitHub) */
+@font-face {
+  font-family: 'Betania Patmos';
+  src: url('https://cdn.jsdelivr.net/gh/huertatipografica/betania-patmos@main/fonts/BetaniaPatmos-Regular.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/huertatipografica/betania-patmos@main/fonts/BetaniaPatmos-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 
 /* ── Reset ─────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -13,7 +24,8 @@
   --accent:  #2563eb;
   --accent-light: #eff6ff;
   --accent-hover: #1d4ed8;
-  --font:    'Manrope', sans-serif;
+  --font:        'DM Sans', sans-serif;
+  --font-title:  'Betania Patmos', 'DM Sans', sans-serif;
   --pad:     clamp(1.2rem, 4vw, 3rem);
 }
 
@@ -90,6 +102,7 @@ body {
   letter-spacing: -0.035em;
   color: var(--text);
   margin-bottom: 1.2rem;
+  font-family: var(--font-title);
 }
 
 /* ── SEARCH ────────────────────────────────────────────── */
@@ -141,11 +154,11 @@ body {
 }
 
 .tag {
-  padding: 0.38rem 1rem;
+  padding: 0.45rem 1.15rem;
   border-radius: 999px;
   border: 1.5px solid var(--border);
   background: var(--white);
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--muted);
   text-decoration: none;
@@ -155,6 +168,24 @@ body {
 }
 .tag:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
 .tag.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* ── HERO CONTROLS ─────────────────────────────────────── */
+.hero__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.hero__controls .sort-btn {
+  flex-shrink: 0;
+}
+
+.hero__controls .tags-section {
+  flex: 1;
+  min-width: 0;
+}
 
 /* ── CAROUSEL ──────────────────────────────────────────── */
 .carousel-section {
@@ -280,17 +311,18 @@ main {
 }
 
 .ep-list .date {
-  font-size: 0.63rem;
+  font-size: 0.78rem;
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   white-space: nowrap;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .ep-list a {
-  font-size: clamp(0.88rem, 1.5vw, 1.05rem);
+  font-size: clamp(1rem, 1.8vw, 1.2rem);
   font-weight: 700;
+  font-family: var(--font-title);
   color: var(--text);
   text-decoration: none;
   line-height: 1.35;
@@ -448,6 +480,7 @@ main > h1 {
   color: var(--text);
   margin: clamp(2rem, 4vw, 3.5rem) var(--pad) 1.2rem;
   max-width: 860px;
+  font-family: var(--font-title);
 }
 
 /* ── PLAY BUTTON ─────────────────────────────────────── */
@@ -499,7 +532,7 @@ main > .date {
 }
 
 main > .description {
-  font-size: 1.05rem;
+  font-size: 1.2rem;
   color: #3a3a3a;
   line-height: 1.85;
   max-width: 860px;
@@ -527,7 +560,7 @@ main > .transcript h2 {
 }
 
 main > .transcript p {
-  font-size: 1.05rem;
+  font-size: 1.2rem;
   color: #444;
   line-height: 1.95;
   font-weight: 400;
@@ -566,12 +599,12 @@ main > .transcript p {
     gap: 0.25rem 0.8rem;
   }
   .ep-list .date { grid-column: 1; grid-row: 2; margin-top: 0.2rem; }
-  .ep-list a { grid-column: 1; grid-row: 1; font-size: 1.1rem; }
+  .ep-list a { grid-column: 1; grid-row: 1; font-size: 1.15rem; }
   .ep-list .badge { grid-column: 2; grid-row: 1; align-self: center; }
 
   main > h1 { font-size: clamp(1.6rem, 7vw, 2.5rem); }
-  main > .description { font-size: 1rem; }
-  main > .transcript p { font-size: 1rem; }
+  main > .description { font-size: 1.1rem; }
+  main > .transcript p { font-size: 1.1rem; }
   .ep-play-btn { font-size: 0.95rem; }
   .ep-carousel-card__title { font-size: 1rem; }
   .ep-map-bubble { bottom: 1.2rem; right: 1rem; }
@@ -675,8 +708,9 @@ main > .transcript p {
 }
 
 .ep-nav-card__title {
-  font-size: 0.82rem;
+  font-size: 0.95rem;
   font-weight: 700;
+  font-family: var(--font-title);
   line-height: 1.3;
   letter-spacing: -0.01em;
   display: -webkit-box;
