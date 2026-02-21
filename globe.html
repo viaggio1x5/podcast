@@ -2,167 +2,229 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <title>Viaggio a 1.5x — Esplora il Mondo</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <meta name="description" content="Viaggio a 1.5x, un podcast di Caterina Finelli.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg:      #f7f5f2;
-      --surface: #ffffff;
-      --border:  #e0dbd5;
-      --text:    #1c1917;
-      --muted:   #78716c;
-      --pad:     clamp(1rem, 5vw, 2.5rem);
+    /* ── TIMELINE overrides (non in style.css) ── */
+
+    .tl-section {
+      padding: clamp(1.5rem, 3vw, 2.5rem) var(--pad);
+      border-bottom: 1px solid var(--border);
     }
-    html { overflow-x: hidden; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-      min-height: 100vh;
+
+    /* shared stop */
+    .tl-stop {
       display: flex;
       flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+      z-index: 1;
+      gap: 0;
+    }
+    .tl-dot {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      border: 3px solid var(--white);
+      box-shadow: 0 0 0 1.5px var(--border);
+      transition: transform 0.18s, box-shadow 0.18s;
+      flex-shrink: 0;
+    }
+    .tl-stop:hover .tl-dot {
+      transform: scale(1.12);
+      box-shadow: 0 0 0 3px var(--stop-color);
+    }
+    .tl-stop.active .tl-dot {
+      transform: scale(1.18);
+      box-shadow: 0 0 0 4px var(--stop-color);
+    }
+    .tl-label {
+      margin-top: 0.55rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-align: center;
+      letter-spacing: 0.01em;
+      font-family: var(--font);
+      transition: color 0.18s;
+      line-height: 1.2;
+    }
+    .tl-stop:hover .tl-label,
+    .tl-stop.active .tl-label { color: var(--text); }
+    .tl-count {
+      font-size: 0.63rem;
+      color: var(--muted);
+      margin-top: 0.12rem;
+      font-family: var(--font);
+      font-weight: 500;
     }
 
-    /* HEADER */
-    .site-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0.9rem var(--pad);
-      border-bottom: 1px solid var(--border);
-      position: sticky; top: 0;
-      background: rgba(247,245,242,0.96);
-      backdrop-filter: blur(8px);
-      z-index: 1000;
+    /* ══ DESKTOP ══ */
+    .tl-desktop {
+      display: flex;
+      align-items: flex-start;
+      position: relative;
     }
-    .logo { font-size: 0.95rem; color: var(--muted); }
-    .logo strong { color: var(--text); font-weight: 700; }
-    .nav { display: flex; gap: 0.5rem; }
-    .nav a {
-      font-size: 0.68rem; font-weight: 600; color: var(--muted);
-      text-decoration: none; border: 1.5px solid var(--border);
-      border-radius: 20px; padding: 0.3rem 0.8rem;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      transition: border-color 0.2s, color 0.2s;
+    .tl-desktop::before {
+      content: '';
+      position: absolute;
+      top: 26px;
+      left: 26px; right: 26px;
+      height: 1.5px;
+      background: var(--border);
+      z-index: 0;
     }
-    .nav a:hover { border-color: var(--text); color: var(--text); }
+    .tl-desktop .tl-stop { flex: 1; }
 
-    /* HERO */
-    .hero { text-align: center; padding: 1.4rem var(--pad) 0.6rem; }
-    .hero h1 {
-      font-size: clamp(1.4rem, 5vw, 2.4rem);
-      font-weight: 700; letter-spacing: -0.03em; color: var(--text);
-    }
-    .hero p { font-size: 0.76rem; color: var(--muted); margin-top: 0.25rem; }
+    /* ══ MOBILE serpentina ══ */
+    .tl-mobile { display: none; }
 
-    /* MAP */
-    #map {
-      width: 100%;
-      height: 380px;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      display: block;
+    .tl-row {
+      display: flex;
+      align-items: flex-start;
+      position: relative;
     }
-    @media (max-width: 600px) { #map { height: 280px; } }
-
-    .leaflet-control-attribution {
-      font-size: 0.55rem !important;
+    .tl-row::after {
+      content: '';
+      position: absolute;
+      top: 26px;
+      left: 0; right: 0;
+      height: 1.5px;
+      background: var(--border);
+      z-index: 0;
     }
+    .tl-row .tl-stop:first-child::before,
+    .tl-row .tl-stop:last-child::after {
+      content: '';
+      position: absolute;
+      width: 50%; height: 2px;
+      background: var(--bg);
+      top: 26px; z-index: 2;
+    }
+    .tl-row .tl-stop:first-child::before { left: 0; }
+    .tl-row .tl-stop:last-child::after   { right: 0; }
+    .tl-mobile .tl-stop { flex: 1; padding: 0 2px; }
 
-    /* FILTER BADGE */
+    .tl-connector {
+      position: relative;
+      height: 32px;
+    }
+    .tl-connector::before {
+      content: '';
+      position: absolute;
+      width: 1.5px; height: 32px;
+      background: var(--border);
+      top: 0;
+    }
+    .tl-connector.right::before { right: 26px; left: auto; }
+    .tl-connector.left::before  { left: 26px; right: auto; }
+
+    /* ── FILTER BADGE (override for globe page) ── */
     #active-filter {
       display: none; align-items: center; gap: 0.5rem;
-      margin: 0.8rem var(--pad);
-      background: var(--surface); border: 1.5px solid var(--text);
-      border-radius: 30px; padding: 0.4rem 1rem;
-      width: fit-content; font-size: 0.8rem; font-weight: 600;
-      color: var(--text); cursor: pointer;
+      margin: 1rem var(--pad);
+      background: var(--accent-light);
+      border: 1.5px solid var(--accent);
+      border-radius: 999px; padding: 0.38rem 1rem;
+      width: fit-content; font-size: 0.78rem; font-weight: 700;
+      color: var(--accent); cursor: pointer;
+      font-family: var(--font);
+      transition: background 0.15s;
     }
     #active-filter.visible { display: flex; }
-    #active-filter:hover { background: var(--border); }
-    #active-filter .clear { opacity: 0.4; }
+    #active-filter:hover { background: #dbeafe; }
+    #active-filter .clear { opacity: 0.6; }
 
-    /* SORT */
-    .list-controls {
-      display: flex; align-items: center;
-      padding: 0.6rem var(--pad);
-      border-top: 1px solid var(--border);
+    /* ── HERO for globe ── */
+    .hero {
+      padding: clamp(1.8rem, 3vw, 2.5rem) var(--pad) clamp(1rem, 2vw, 1.5rem);
     }
-    .sort-btn {
-      width: 36px; height: 36px;
-      border: 1.5px solid var(--border); border-radius: 50%;
-      background: none; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      color: var(--muted); transition: border-color 0.15s, color 0.15s;
+    .hero__sub {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 500;
+      margin-top: 0.5rem;
+      font-family: var(--font);
     }
-    .sort-btn:hover { border-color: var(--text); color: var(--text); }
-    #sort-icon { transition: transform 0.3s; }
 
-    /* EPISODE LIST */
-    main { flex: 1; }
-    .ep-list { list-style: none; border-top: 1px solid var(--border); }
+    /* ── EP LIST: match homepage grid ── */
+    .ep-list { list-style: none; }
     .ep-list li {
+      display: grid;
+      grid-template-columns: 90px 1fr auto;
+      align-items: center;
+      gap: 0 2rem;
+      padding: 0.95rem 0;
       border-bottom: 1px solid var(--border);
-      padding: 1rem var(--pad);
-      display: flex; flex-direction: column; gap: 0.22rem;
-      transition: background 0.12s;
+      transition: background 0.12s, margin 0.12s, padding 0.12s;
     }
-    .ep-list li:hover { background: var(--surface); }
+    .ep-list li:first-child { border-top: 1px solid var(--border); }
+    .ep-list li:hover {
+      background: var(--accent-light);
+      margin: 0 calc(-1 * var(--pad));
+      padding-left: var(--pad);
+      padding-right: var(--pad);
+    }
     .ep-list .date {
-      font-size: 0.62rem; font-weight: 600; color: var(--muted);
-      text-transform: uppercase; letter-spacing: 0.09em;
+      font-size: 0.63rem; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      white-space: nowrap; font-weight: 500;
     }
     .ep-list a {
-      font-size: 0.95rem; font-weight: 600; color: var(--text);
-      text-decoration: none; line-height: 1.38;
-      transition: color 0.15s;
+      font-size: clamp(0.88rem, 1.5vw, 1.05rem);
+      font-weight: 700; color: var(--text);
+      text-decoration: none; line-height: 1.35;
+      letter-spacing: -0.01em; transition: opacity 0.15s;
     }
-    .ep-list a:hover { color: #555; }
-    .ep-list .badge { display: none; }
-    .no-results {
-      text-align: center; padding: 3rem var(--pad);
-      color: var(--muted); font-size: 0.9rem;
+    .ep-list li:hover a { color: var(--accent); }
+    .ep-list .badge {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--accent); display: block;
+      flex-shrink: 0; font-size: 0;
     }
+    .no-results { padding: 3rem 0; color: var(--muted); font-size: 0.85rem; }
 
-    /* FOOTER */
-    .ep-footer {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 1.3rem var(--pad); border-top: 1px solid var(--border);
-      gap: 1.5rem; flex-wrap: wrap;
-    }
-    .ep-footer__copy { display: flex; flex-direction: column; gap: 0.15rem; }
-    .ep-footer__copy strong { font-size: 0.82rem; font-weight: 700; color: var(--text); }
-    .ep-footer__copy span { font-size: 0.65rem; color: var(--muted); }
-    .ep-footer__social { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; }
-    .ep-social-link {
-      width: 34px; height: 34px; border: 1.5px solid var(--border); border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      color: var(--muted); text-decoration: none;
-      transition: color 0.15s, border-color 0.15s;
-    }
-    .ep-social-link svg { width: 14px; height: 14px; fill: currentColor; }
-    .ep-social-link:hover { color: var(--text); border-color: var(--text); }
     @media (max-width: 640px) {
-      .ep-footer { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .tl-desktop { display: none; }
+      .tl-mobile   { display: block; }
+      .tl-label { font-size: 0.78rem; }
+      .tl-count { font-size: 0.67rem; }
+
+      .ep-list li {
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+        gap: 0.25rem 0.8rem;
+      }
+      .ep-list .date { grid-column: 1; grid-row: 2; margin-top: 0.2rem; }
+      .ep-list a     { grid-column: 1; grid-row: 1; font-size: 1.1rem; }
+      .ep-list .badge{ grid-column: 2; grid-row: 1; align-self: center; }
     }
   </style>
 </head>
 <body>
 
 <header class="site-header">
-  <div class="logo">Viaggio a <strong>1.5x</strong></div>
-  <nav class="nav">
+  <div class="site-header__logo">Viaggio a <strong>1.5x</strong></div>
+  <nav class="site-header__nav">
     <a href="index.html">Lista</a>
     <a href="https://linktr.ee/viaggio1x5" target="_blank" rel="noopener">About</a>
   </nav>
 </header>
 
 <section class="hero">
-  <h1>Dove vorresti andare?</h1>
-  <p>Tocca un pin per filtrare gli episodi</p>
+  <h1 class="hero__title">Dove vorresti andare?</h1>
+  <p class="hero__sub">Tocca una tappa per filtrare gli episodi</p>
 </section>
 
-<div id="map"></div>
+<div class="tl-section">
+  <div class="tl-desktop" id="tl-desktop"></div>
+  <div class="tl-mobile"  id="tl-mobile"></div>
+</div>
 
 <main>
   <div id="active-filter" onclick="clearFilter()">
@@ -1045,115 +1107,109 @@
     </div>
   </footer>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const LOCATIONS = [
-  { tag: 'brasile',   label: 'Brasile',    lat: -15.8, lon: -47.9, color: '#16a34a',
-    keywords: ['brasile','rio de janeiro','sao paulo','florianopolis','ilhabela'] },
-  { tag: 'colombia',  label: 'Colombia',   lat:   4.7, lon: -74.1, color: '#d97706',
-    keywords: ['colombia','bogot','cartagena','santa marta','medellin','providencia','san andr','palomino','tayrona','cali'] },
-  { tag: 'rica',      label: 'Costa Rica', lat:   9.9, lon: -84.1, color: '#0891b2',
-    keywords: ['costa rica','san jos'] },
-  { tag: 'panama',    label: 'Panama',     lat:   8.9, lon: -79.5, color: '#7c3aed',
-    keywords: ['panam'] },
-  { tag: 'messico',   label: 'Messico',    lat:  19.4, lon: -99.1, color: '#dc2626',
-    keywords: ['messico','oaxaca','yucatan','holbox','cancun','bacalar','cozumel','mazunte','puerto escondido'] },
-  { tag: 'berlino',   label: 'Berlino',    lat:  52.5, lon:  13.4, color: '#1d4ed8',
-    keywords: ['berlino','germania'] },
-  { tag: 'amsterdam', label: 'Amsterdam',  lat: 52.37, lon:   4.9, color: '#c2410c',
-    keywords: ['amsterdam','olanda'] },
-  { tag: 'croazia',   label: 'Croazia',    lat:  43.5, lon:  16.4, color: '#0f766e',
-    keywords: ['croazia','hvar','stari grad'] },
+const STOPS = [
+  { tag: 'brasile',   label: 'Brasile',    color: '#16a34a' },
+  { tag: 'colombia',  label: 'Colombia',   color: '#d97706' },
+  { tag: 'rica',      label: 'Costa Rica', color: '#0891b2' },
+  { tag: 'panama',    label: 'Panama',     color: '#7c3aed' },
+  { tag: 'messico',   label: 'Messico',    color: '#dc2626' },
+  { tag: 'berlino',   label: 'Berlino',    color: '#2563eb' },
+  { tag: 'amsterdam', label: 'Amsterdam',  color: '#c2410c' },
+  { tag: 'croazia',   label: 'Croazia',    color: '#0f766e' },
 ];
 
-// Count episodes by title
+const keywordsMap = {
+  brasile:   ['brasile','brasil','rio','sao paulo','florianopolis','ilhabela'],
+  colombia:  ['colombia','bogota','cartagena','santa marta','cali','medellin','providencia','san andres','palomino','tayrona'],
+  rica:      ['costa rica','costarica','san jose'],
+  panama:    ['panama'],
+  messico:   ['messico','mexico','oaxaca','yucatan','holbox','cancun','playa','bacalar','cozumel','mazunte','puerto escondido'],
+  berlino:   ['berlino','berlin','germany','germania','kreuzberg','mitte','schoneberg','neukölln'],
+  amsterdam: ['amsterdam','olanda'],
+  croazia:   ['croazia','hvar','croatia','stari grad','lesina'],
+};
+
 const items = Array.from(document.querySelectorAll('.ep-list li'));
-function matchesLoc(li, loc) {
-  const title = (li.querySelector('a')?.textContent || '').toLowerCase();
-  return loc.keywords.some(k => title.includes(k));
+function countForTag(tag) {
+  return items.filter(li => {
+    const s = (li.dataset.search || '').toLowerCase();
+    return (keywordsMap[tag]||[tag]).some(k => s.includes(k));
+  }).length;
 }
-LOCATIONS.forEach(loc => {
-  loc.count = items.filter(li => matchesLoc(li, loc)).length;
-});
+STOPS.forEach(s => s.count = countForTag(s.tag));
 
-// Build map
-const map = L.map('map', {
-  center: [20, -20],
-  zoom: 2,
-  zoomControl: true,
-  scrollWheelZoom: false,
-  touchZoom: true,
-  dragging: true,
-});
+function stopHTML(s) {
+  return `<div class="tl-stop" data-tag="${s.tag}"
+    style="--stop-color:${s.color}"
+    onclick="handleStop('${s.tag}','${s.label}',${s.count})">
+    <div class="tl-dot" style="background:${s.color}"></div>
+    <div class="tl-label">${s.label}</div>
+    <div class="tl-count">${s.count} ep.</div>
+  </div>`;
+}
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 12,
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-}).addTo(map);
+// Desktop
+const desk = document.getElementById('tl-desktop');
+STOPS.forEach(s => desk.insertAdjacentHTML('beforeend', stopHTML(s)));
 
-// Custom circular icon
-function makeIcon(loc, active) {
-  const s = active ? 46 : 36;
-  const sw = active ? 3 : 2.5;
-  return L.divIcon({
-    html: `<svg xmlns="http://www.w3.org/2000/svg" width="${s}" height="${s}">
-      <circle cx="${s/2}" cy="${s/2}" r="${s/2 - sw}"
-        fill="${loc.color}" stroke="white" stroke-width="${sw}"/>
-    </svg>`,
-    className: '',
-    iconSize: [s, s],
-    iconAnchor: [s/2, s/2],
-    popupAnchor: [0, -(s/2+6)],
+// Mobile serpentina 4-4
+const mob = document.getElementById('tl-mobile');
+function buildRow(stops, reversed, connectorSide) {
+  const row = document.createElement('div');
+  row.className = 'tl-row';
+  (reversed ? [...stops].reverse() : stops).forEach(s =>
+    row.insertAdjacentHTML('beforeend', stopHTML(s))
+  );
+  mob.appendChild(row);
+  if (connectorSide) {
+    const c = document.createElement('div');
+    c.className = `tl-connector ${connectorSide}`;
+    mob.appendChild(c);
+  }
+}
+buildRow(STOPS.slice(0, 4), false, 'right');
+buildRow(STOPS.slice(4, 8), true,  null);
+
+// Filter
+const noResults = document.getElementById('no-results');
+function filterItems(tag) {
+  let visible = 0;
+  items.forEach(li => {
+    if (!tag) { li.style.display = ''; visible++; return; }
+    const s = (li.dataset.search || '').toLowerCase();
+    const show = (keywordsMap[tag]||[tag]).some(k => s.includes(k));
+    li.style.display = show ? '' : 'none';
+    if (show) visible++;
   });
+  noResults.style.display = visible === 0 ? 'block' : 'none';
 }
 
 let activeTag = null;
-const markers = {};
-
-LOCATIONS.forEach(loc => {
-  const m = L.marker([loc.lat, loc.lon], { icon: makeIcon(loc, false) })
-    .addTo(map)
-    .bindTooltip(`<b>${loc.label}</b><br>${loc.count} episodi`, {
-      direction: 'top', offset: [0, -8], opacity: 1,
-    });
-  m.on('click', () => {
-    if (activeTag === loc.tag) { clearFilter(); return; }
-    activeTag = loc.tag;
-    LOCATIONS.forEach(l => markers[l.tag].setIcon(makeIcon(l, false)));
-    m.setIcon(makeIcon(loc, true));
-    document.getElementById('filter-text').textContent =
-      loc.label + ' — ' + loc.count + ' episodi';
-    document.getElementById('active-filter').classList.add('visible');
-    filterItems(loc);
-    document.querySelector('main').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-  markers[loc.tag] = m;
-});
-
-const noResults = document.getElementById('no-results');
-function filterItems(loc) {
-  let v = 0;
-  items.forEach(li => {
-    if (!loc) { li.style.display = ''; v++; return; }
-    const show = matchesLoc(li, loc);
-    li.style.display = show ? '' : 'none';
-    if (show) v++;
-  });
-  noResults.style.display = v === 0 ? 'block' : 'none';
+function handleStop(tag, label, count) {
+  if (activeTag === tag) { clearFilter(); return; }
+  activeTag = tag;
+  document.querySelectorAll('.tl-stop').forEach(el =>
+    el.classList.toggle('active', el.dataset.tag === tag)
+  );
+  document.getElementById('filter-text').textContent =
+    label + ' — ' + count + ' puntate';
+  document.getElementById('active-filter').classList.add('visible');
+  filterItems(tag);
+  document.querySelector('main').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-
 function clearFilter() {
   activeTag = null;
-  LOCATIONS.forEach(l => markers[l.tag].setIcon(makeIcon(l, false)));
+  document.querySelectorAll('.tl-stop').forEach(el => el.classList.remove('active'));
   document.getElementById('active-filter').classList.remove('visible');
   filterItems(null);
 }
 window.clearFilter = clearFilter;
 
 // Sort
-const sortBtn = document.getElementById('sort-btn');
+const sortBtn  = document.getElementById('sort-btn');
 const sortIcon = document.getElementById('sort-icon');
-const list = document.getElementById('ep-list');
+const list     = document.getElementById('ep-list');
 let sortAsc = true;
 sortIcon.style.transform = 'rotate(180deg)';
 [...items].sort((a,b) => a.dataset.date.localeCompare(b.dataset.date))
