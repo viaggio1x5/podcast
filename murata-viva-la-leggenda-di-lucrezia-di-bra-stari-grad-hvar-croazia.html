@@ -21,6 +21,9 @@
     <img src='https://d3wo5wojvuv7l.cloudfront.net/t_rss_itunes_square_1400/images.spreaker.com/original/9f9f1773b735d3e947fceeb870446315.jpg' alt='Murata Viva! La leggenda di Lucrezia di Brač. Stari Grad, Hvar, Croazia.' class='ep-cover'>
     <h1>Murata Viva! La leggenda di Lucrezia di Brač. Stari Grad, Hvar, Croazia.</h1>
     <p class="date">Sun, 28 Sep 2025</p>
+    <div class="ep-play-row">
+      <audio id="ep-audio" controls src="https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/67926346/3_lucrezia_di_brac.mp3" preload="none" style="width:100%;max-width:560px;display:block;margin:0 var(--pad) 1.5rem;accent-color:#3b82f6;height:40px;"></audio>
+    </div>
     <div class="description">Dove andare a Stari Grad quando piove?<br />É vero che l'isola nasconde persone murate vive?<br /><br />Resti umani, navi in fiamme e gente murata viva: questo ti tocca se il cielo si spegne a Stari Grad, perciò quando piove, puoi andare per chiese true crime e misteri insolvibili da più di 500 anni. <br />Tipo quello della viaggiatrice che nel 1559 spezzò il mare per raggiungere una destinazione impossibile, detta "Uzidana Picokara", che ancora oggi fa impazzire chiunque visiti la Chiesa di San Nicola a Cittavecchia.<br /><br />Fate largo a Lukrica di Brač, un'autentica leggenda antifemminista.<br /><br />🇭🇷 Isola di Lesina/Hvar, Cittavecchia/Stari Grad, Croazia.<br />
 <div class="ep-map-card"><iframe src="https://www.google.com/maps/d/embed?mid=1INrkQUKsl6vUpRNEFGYzstTcYDN7KR8&ll=47.11977157332829,10.717340199999995&z=5" loading="lazy" allowfullscreen></iframe></div><br />Grazie a: Sanja Roić e Klaudija Gamulin di Dalmatia Storytelling.<br />(Fonti: https://dalmatiastorytelling.com/hr/experience/20231229-lukrica-bozja-ovcica/).<br /><br />🟢 Mappa: https://www.google.com/maps/d/u/0/edit?<br />mid=1INrkQUKsl6vUpRNEFGYzstTcYDN7KR8&amp;usp=sharing<br />🟡 Instagram: ⁠http://www.instagram.com/viaggio1x5<br />🟣 Contatti: ⁠⁠https://linktr.ee/viaggio1x5<br /><br />#StariGrad, #IsolaDiHvar, #Cittavecchia, #LukricaDiBrač, #LeggendeCroate, Lucrezia di Brac</div></div>
   </main>
@@ -59,61 +62,5 @@
     </div>
   </footer>
   </div>
-  <div class="mini-player" id="ep-mini-player">
-    <div class="mini-player__info">
-      <span class="mini-player__title" id="ep-mini-title"></span>
-      <button class="mini-player__close" id="ep-mini-close">&#x2715;</button>
-    </div>
-    <audio id="ep-mini-audio" controls></audio>
-  </div>
-  <script>
-  (function() {
-    var player   = document.getElementById('ep-mini-player');
-    var audio    = document.getElementById('ep-mini-audio');
-    var closeBtn = document.getElementById('ep-mini-close');
-    var titleEl  = document.getElementById('ep-mini-title');
-
-    if (audio) audio.src = "https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/67926346/3_lucrezia_di_brac.mp3";
-    if (titleEl) titleEl.textContent = document.querySelector("h1") ? document.querySelector("h1").textContent.trim() : document.title.split("—")[0].trim();
-    if (player) setTimeout(function(){ player.classList.add('visible'); }, 100);
-    if (audio)  setTimeout(function(){ audio.play().catch(function(){}); }, 3000);
-
-    if (closeBtn) {
-      closeBtn.addEventListener('click', function() {
-        if (audio) audio.pause();
-        if (player) player.classList.remove('visible');
-      });
-    }
-
-    // Linkify URLs in .description
-    function linkify(node) {
-      if (node.nodeType===3 && /https?:\/\//.test(node.textContent)) {
-        var frag = document.createDocumentFragment();
-        node.textContent.split(/(https?:\/\/[^\s<]+)/g).forEach(function(p) {
-          if (/^https?:\/\//.test(p)) {
-            var a=document.createElement('a'); a.href=p; a.textContent=p;
-            a.target='_blank'; a.rel='noopener'; a.className='ep-link';
-            frag.appendChild(a);
-          } else { frag.appendChild(document.createTextNode(p)); }
-        });
-        node.parentNode.replaceChild(frag, node);
-      } else if (node.nodeType===1 && node.nodeName!=='A' && node.nodeName!=='SCRIPT') {
-        Array.from(node.childNodes).forEach(linkify);
-      }
-    }
-    var desc = document.querySelector('.description');
-    if (desc) linkify(desc);
-
-    // Tag filtering on homepage when hashtag clicked
-    document.querySelectorAll('.ep-hashtag').forEach(function(a) {
-      a.addEventListener('click', function(e) {
-        var tag = a.getAttribute('data-tag');
-        if (tag) {
-          sessionStorage.setItem('ep_filter_tag', tag);
-        }
-      });
-    });
-  })();
-  </script>
 </body>
 </html>

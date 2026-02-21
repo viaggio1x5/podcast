@@ -21,6 +21,9 @@
     <img src='https://d3wo5wojvuv7l.cloudfront.net/t_rss_itunes_square_1400/images.spreaker.com/original/28603fc8fa9ffdf450bb618184805a67.jpg' alt='Nicolas Jaar Live a Radical Sounds Latin America. Morphine Raum, Kreuzberg, Berlin' class='ep-cover'>
     <h1>Nicolas Jaar Live a Radical Sounds Latin America. Morphine Raum, Kreuzberg, Berlin</h1>
     <p class="date">Wed, 20 Nov 2024</p>
+    <div class="ep-play-row">
+      <audio id="ep-audio" controls src="https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/62882146/6_nicolasjaar.mp3" preload="none" style="width:100%;max-width:560px;display:block;margin:0 var(--pad) 1.5rem;accent-color:#3b82f6;height:40px;"></audio>
+    </div>
     <div class="description">In Berlin there’s an extraordinary Festival that, since 2019, celebrates active imagination and sonic protest aimed at eroding the Eurocentric conventions that have made our world predictable, dangerous, and prone to boredom.<br /><br />It’s called Radical Sounds Latin America, and yesterday, thanks to an incredible tip, I was in the audience enjoying the opening night performances by Mexican poet Merma Suelo (<a href="https://www.instagram.com/mermasuelo/" target="_blank" rel="noreferrer noopener">@mermasuelo</a> ) and the metamorphic artist Nicolas Jaar, fresh from his releases Piedras 1 &amp; 2.<br /><br />In this episode, I’ll share my experience, recorded directly from Morphine Raum, home of the label Morphine Records, founded by Lebanese artist Morphosis (Rabih Beaini). It seems impossible, but the Berlin I had dreamed of rediscovering for years finally feels reincarnated here, and this time, I’ll explain you why.<br /><br />Thanks to: Radical Sounds Latin America <a href="https://www.instagram.com/rs_latinamerica/" target="_blank" rel="noreferrer noopener">@rs_latinamerica</a><br />Morphine Records <a href="https://www.instagram.com/morphine_records_raum/" target="_blank" rel="noreferrer noopener">@morphine_records_raum</a><br />Rabih Beaini <a href="https://www.instagram.com/rabih__beaini/" target="_blank" rel="noreferrer noopener">@rabih__beaini</a><br />Nicolas Jaar <a href="https://www.instagram.com/nicolasjaar/" target="_blank" rel="noreferrer noopener">@nicolasjaar</a><br /><br />📡 Radical Sounds Latin America Festival 6th - Morphine Raum, Kreuzberg, Berlino.<br /><br />-------<br /><br />A Berlino c'è un Festival strabiliante che da sei anni celebra l'immaginazione attiva, la protesta sonora e la corrosione delle convenzioni Eurocentriche che hanno reso il nostro mondo prevedibile, pericoloso, e prono allo sbadiglio.<br /> <br />Si chiama Radical Sounds Latin America e ieri ero tra il pubblico che si è goduto la serata di apertura con le performances della poetessa messicana Merma Suelo e l'artista metamorfico Nicolas Jaar - fresco di uscita discografica con gli album Piedras 1 &amp; 2.<br /><br />In questa puntata vi racconto come è andata dalla Morphine Raum, casa della label Morphine Records fondata dall'artista libanese Morphosis (Rabih Beaini). Suona impossibile, ma la Berlino che ho sognato di ritrovare per anni sembra finalmente essersi reincarnata di nuovo qui, e stavolta vi spiego perché.<br /><br />Grazie a:<br />Radical Sounds Latin America <a href="https://www.instagram.com/rs_latinamerica/" target="_blank" rel="noreferrer noopener">@rs_latinamerica</a> <br />Morphine Records <a href="https://www.instagram.com/morphine_records_raum/" target="_blank" rel="noreferrer noopener">@morphine_records_raum</a> <br />Rabih Beaini <a href="https://www.instagram.com/rabih__beaini/" target="_blank" rel="noreferrer noopener">@rabih__beaini</a><br />Nicolas Jaar <a href="https://www.instagram.com/nicolasjaar/" target="_blank" rel="noreferrer noopener">@nicolasjaar</a><br /><a href="https://radicalsoundslatinamerica.com" target="_blank" rel="noreferrer noopener"></a><br />Per saperne di più: <a href="https://radicalsoundslatinamerica.com" target="_blank" rel="noreferrer noopener">https://radicalsoundslatinamerica.com</a><br />Eduardo Galeano, <a href="https://www.corteidh.or.cr/tablas/r31206.pdf" target="_blank" rel="noreferrer noopener">«Las venas abiertas de América Latina»</a> , 1971.<br /><br />🟣 Mi trovi su ⁠<a href="http://www.instagram.com/viaggio1x5%20%E2%81%A0" target="_blank" rel="noreferrer noopener">http://www.instagram.com/viaggio1x5 ⁠</a><br />🟢 Mappe &amp; Contatti: <a href="https://linktr.ee/viaggio1x5" target="_blank" rel="noreferrer noopener">https://linktr.ee/viaggio1x5</a><br /><br />#radicalsoundslatinamerica #morphinerecords #berlino #vivereingermania #podcastitaliano #vitadaexpat #nicolasjaar #vivereaberlino</div></div>
   </main>
   <nav class="ep-nav">
@@ -58,61 +61,5 @@
     </div>
   </footer>
   </div>
-  <div class="mini-player" id="ep-mini-player">
-    <div class="mini-player__info">
-      <span class="mini-player__title" id="ep-mini-title"></span>
-      <button class="mini-player__close" id="ep-mini-close">&#x2715;</button>
-    </div>
-    <audio id="ep-mini-audio" controls></audio>
-  </div>
-  <script>
-  (function() {
-    var player   = document.getElementById('ep-mini-player');
-    var audio    = document.getElementById('ep-mini-audio');
-    var closeBtn = document.getElementById('ep-mini-close');
-    var titleEl  = document.getElementById('ep-mini-title');
-
-    if (audio) audio.src = "https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/62882146/6_nicolasjaar.mp3";
-    if (titleEl) titleEl.textContent = document.querySelector("h1") ? document.querySelector("h1").textContent.trim() : document.title.split("—")[0].trim();
-    if (player) setTimeout(function(){ player.classList.add('visible'); }, 100);
-    if (audio)  setTimeout(function(){ audio.play().catch(function(){}); }, 3000);
-
-    if (closeBtn) {
-      closeBtn.addEventListener('click', function() {
-        if (audio) audio.pause();
-        if (player) player.classList.remove('visible');
-      });
-    }
-
-    // Linkify URLs in .description
-    function linkify(node) {
-      if (node.nodeType===3 && /https?:\/\//.test(node.textContent)) {
-        var frag = document.createDocumentFragment();
-        node.textContent.split(/(https?:\/\/[^\s<]+)/g).forEach(function(p) {
-          if (/^https?:\/\//.test(p)) {
-            var a=document.createElement('a'); a.href=p; a.textContent=p;
-            a.target='_blank'; a.rel='noopener'; a.className='ep-link';
-            frag.appendChild(a);
-          } else { frag.appendChild(document.createTextNode(p)); }
-        });
-        node.parentNode.replaceChild(frag, node);
-      } else if (node.nodeType===1 && node.nodeName!=='A' && node.nodeName!=='SCRIPT') {
-        Array.from(node.childNodes).forEach(linkify);
-      }
-    }
-    var desc = document.querySelector('.description');
-    if (desc) linkify(desc);
-
-    // Tag filtering on homepage when hashtag clicked
-    document.querySelectorAll('.ep-hashtag').forEach(function(a) {
-      a.addEventListener('click', function(e) {
-        var tag = a.getAttribute('data-tag');
-        if (tag) {
-          sessionStorage.setItem('ep_filter_tag', tag);
-        }
-      });
-    });
-  })();
-  </script>
 </body>
 </html>

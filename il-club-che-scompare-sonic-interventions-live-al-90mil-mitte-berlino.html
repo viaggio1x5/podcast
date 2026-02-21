@@ -21,6 +21,9 @@
     <img src='https://d3wo5wojvuv7l.cloudfront.net/t_rss_itunes_square_1400/images.spreaker.com/original/e43221c019165dbbd99d1a7546b58cb1.jpg' alt='Il club che scompare: Sonic Interventions Live al 90mil, Mitte, Berlino' class='ep-cover'>
     <h1>Il club che scompare: Sonic Interventions Live al 90mil, Mitte, Berlino</h1>
     <p class="date">Thu, 28 Nov 2024</p>
+    <div class="ep-play-row">
+      <audio id="ep-audio" controls src="https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/63036059/soundinterventions_90mil.mp3" preload="none" style="width:100%;max-width:560px;display:block;margin:0 var(--pad) 1.5rem;accent-color:#3b82f6;height:40px;"></audio>
+    </div>
     <div class="description">A Berlino c’è un club che vive solo per qualche notte, un’isola randagia e felice che resiste al loop del comprare, consumare e dimenticare - persino il tempo libero. Si chiama <a href="https://www.90mil.berlin/" target="_blank" rel="noreferrer noopener">90mil</a>, e l'indirizzo non c'è: per trovarlo, serve triangolare tra Jannowitzbrücke, il Tresor e la Sprea.<br />Molte persone vengono qui per la radio, i corsi di Ableton, i documentari, i dj set e le mostre; noi invece per il concerto dei <a href="https://www.sonicinterventions.com/" target="_blank" rel="noreferrer noopener">Sonic Interventions</a>, clan afrofuturista che presenta l'album di debutto per Agogo Records. Certo, sempre se ci arriviamo raga 😅<br /><br />Grazie a: 90mil <a href="https://www.instagram.com/90mil___/" target="_blank" rel="noreferrer noopener">90mil___</a><br />Sonic Interventions <a href="https://www.instagram.com/sonicinterventions/" target="_blank" rel="noreferrer noopener">@sonicinterventions</a><br />Ascolta <a href="https://sonicinterventions.bandcamp.com/album/do-you-remember" target="_blank" rel="noreferrer noopener">"Do You Remember?" dei Sonic Interventions, Agogo Records</a><br /><br />🟣 Mi trovi su ⁠<a href="https://www.instagram.com/viaggio1x5/" target="_blank" rel="noreferrer noopener">@viaggio1x5</a><br />🟢 Mappe &amp; Contatti: ⁠⁠<a href="https://linktr.ee/viaggio1x5" target="_blank" rel="noreferrer noopener">https://linktr.ee/viaggio1x5</a><br /><br />In Berlin, there’s a club that exists only for a few nights—an island adrift and joyful, defying the endless cycle of buying, consuming, and forgetting—even free time. It’s called 90mil, and there’s no address. To find it, you’ll need to triangulate between Jannowitzbrücke, the Tresor, and the Spree.Many come here for the radio station, Ableton courses, documentaries, DJ sets, and exhibitions. We, however, are heading there for the Sonic Interventions concert, an afrofuturist collective presenting their debut album for Agogo Records. That is, if we even manage to make it there, folks 😅<br /><br />#90mil #berlinclubs #sonicinterventions #albumrelease #vivereaberlino</div></div>
   </main>
   <nav class="ep-nav">
@@ -58,61 +61,5 @@
     </div>
   </footer>
   </div>
-  <div class="mini-player" id="ep-mini-player">
-    <div class="mini-player__info">
-      <span class="mini-player__title" id="ep-mini-title"></span>
-      <button class="mini-player__close" id="ep-mini-close">&#x2715;</button>
-    </div>
-    <audio id="ep-mini-audio" controls></audio>
-  </div>
-  <script>
-  (function() {
-    var player   = document.getElementById('ep-mini-player');
-    var audio    = document.getElementById('ep-mini-audio');
-    var closeBtn = document.getElementById('ep-mini-close');
-    var titleEl  = document.getElementById('ep-mini-title');
-
-    if (audio) audio.src = "https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/63036059/soundinterventions_90mil.mp3";
-    if (titleEl) titleEl.textContent = document.querySelector("h1") ? document.querySelector("h1").textContent.trim() : document.title.split("—")[0].trim();
-    if (player) setTimeout(function(){ player.classList.add('visible'); }, 100);
-    if (audio)  setTimeout(function(){ audio.play().catch(function(){}); }, 3000);
-
-    if (closeBtn) {
-      closeBtn.addEventListener('click', function() {
-        if (audio) audio.pause();
-        if (player) player.classList.remove('visible');
-      });
-    }
-
-    // Linkify URLs in .description
-    function linkify(node) {
-      if (node.nodeType===3 && /https?:\/\//.test(node.textContent)) {
-        var frag = document.createDocumentFragment();
-        node.textContent.split(/(https?:\/\/[^\s<]+)/g).forEach(function(p) {
-          if (/^https?:\/\//.test(p)) {
-            var a=document.createElement('a'); a.href=p; a.textContent=p;
-            a.target='_blank'; a.rel='noopener'; a.className='ep-link';
-            frag.appendChild(a);
-          } else { frag.appendChild(document.createTextNode(p)); }
-        });
-        node.parentNode.replaceChild(frag, node);
-      } else if (node.nodeType===1 && node.nodeName!=='A' && node.nodeName!=='SCRIPT') {
-        Array.from(node.childNodes).forEach(linkify);
-      }
-    }
-    var desc = document.querySelector('.description');
-    if (desc) linkify(desc);
-
-    // Tag filtering on homepage when hashtag clicked
-    document.querySelectorAll('.ep-hashtag').forEach(function(a) {
-      a.addEventListener('click', function(e) {
-        var tag = a.getAttribute('data-tag');
-        if (tag) {
-          sessionStorage.setItem('ep_filter_tag', tag);
-        }
-      });
-    });
-  })();
-  </script>
 </body>
 </html>

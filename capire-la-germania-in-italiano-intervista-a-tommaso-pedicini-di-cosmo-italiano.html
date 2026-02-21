@@ -21,6 +21,9 @@
     <img src='https://d3wo5wojvuv7l.cloudfront.net/t_rss_itunes_square_1400/images.spreaker.com/original/8461d5cd8dacf73469a66b7f8601ef51.jpg' alt='Capire la Germania in Italiano: Intervista a Tommaso Pedicini di Cosmo Italiano.' class='ep-cover'>
     <h1>Capire la Germania in Italiano: Intervista a Tommaso Pedicini di Cosmo Italiano.</h1>
     <p class="date">Sat, 26 Oct 2024</p>
+    <div class="ep-play-row">
+      <audio id="ep-audio" controls src="https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/62507845/finale_intervista_cosmoitaliano.mp3" preload="none" style="width:100%;max-width:560px;display:block;margin:0 var(--pad) 1.5rem;accent-color:#3b82f6;height:40px;"></audio>
+    </div>
     <div class="description">💡Come capire meglio la Germania, anche senza parlare tedesco?<br /><br />L'ho chiesto a Tommaso Pedicini, Caporedattore di <a href="https://www.facebook.com/cosmoitalienisch?__cft__%5B0%5D=AZV4m346AyG-tpis5251HvTb3SGl5JnXEmmPVxndwvZ2ZxyzvkRY-bSWR5a0-sIB4sv-MGng7diqKIUNL3Y8sTbHK24vwAPve6fM3E2jfQnS4RRmhEVy1LML0vluDKgsy73Z2TemRfJ4DkM1oq-f3bXJ5P_a-eB0_5w8Kltnv3ExwrPIwzHf1Aks3ICEXeQsRs78O1YlvhKwhRNqMBDjTIFUV363xOFQfD8vGQq5YtDjCQ&amp;__tn__=-%5DK-y-R" target="_blank" rel="noreferrer noopener">⁠COSMO italiano⁠</a>, la trasmissione radiofonica e podcast che ogni giorno racconta la Germania in lingua italiana dalla sua storica redazione di Colonia.<br /><br />In questa puntata parliamo delle sfide nel fare giornalismo tra Italia, Germania ed Europa, della composizione dell'agenda editoriale, e dei temi spesso intricati che Cosmo Italiano spiega al pubblico italofono con approfondimenti, interviste ed analisi politica.<br /><br />Se volete saperne di più, <b>seguite Cosmo Italiano</b> dal lunedì al venerdì su <b>WDR</b>: <a href="https://www1.wdr.de/radio/cosmo/programm/sendungen/radio-colonia/index.html" target="_blank" rel="noreferrer noopener">https://www1.wdr.de/radio/cosmo/programm/sendungen/radio-colonia/index.html </a><br /><br />l'audioteca <b>ARD</b>: <a href="https://www.ardaudiothek.de/sendung/cosmo-italiano/10132783/" target="_blank" rel="noreferrer noopener">https://www.ardaudiothek.de/sendung/cosmo-italiano/10132783/</a><br /><br /><b>Spotify</b>: <a href="https://open.spotify.com/show/3MKHgHbd5TAPXhFBhSEKG7" target="_blank" rel="noreferrer noopener">https://open.spotify.com/show/3MKHgHbd5TAPXhFBhSEKG7</a><br /><br />e la pagina <b>Facebook</b>: <a href="https://www.facebook.com/cosmoitalienisch" target="_blank" rel="noreferrer noopener">https://www.facebook.com/cosmoitalienisch</a><br /><br />Grazie a Tommaso Pedicini e la tutta la Redazione di Cosmo Italiano<br /><br /><br />🇩🇪 ⁠⁠⁠Colonia - Berlino , Germania<br />
 <div class="ep-map-card"><iframe src="https://www.google.com/maps/d/embed?mid=1INrkQUKsl6vUpRNEFGYzstTcYDN7KR8&ll=47.11977157332829,10.717340199999995&z=5" loading="lazy" allowfullscreen></iframe></div><br />🟣 Mi trovi su <a href="https://www.instagram.com/viaggio1x5/" target="_blank" rel="noreferrer noopener">⁠@viaggio1x5 ⁠</a><br />🟢 Mappe &amp; Contatti: <a href="https://linktr.ee/viaggio1x5" target="_blank" rel="noreferrer noopener">⁠⁠https://linktr.ee/viaggio1x5⁠</a> <a href="https://linktr.ee/viaggio1x5" target="_blank" rel="noreferrer noopener">⁠⁠⁠</a><br /><br />#cosmoitaliano #wdr #tommasopedicini #berlino #colonia #vivereingermania #media #podcastitaliano #politicaestera</div></div>
   </main>
@@ -59,61 +62,5 @@
     </div>
   </footer>
   </div>
-  <div class="mini-player" id="ep-mini-player">
-    <div class="mini-player__info">
-      <span class="mini-player__title" id="ep-mini-title"></span>
-      <button class="mini-player__close" id="ep-mini-close">&#x2715;</button>
-    </div>
-    <audio id="ep-mini-audio" controls></audio>
-  </div>
-  <script>
-  (function() {
-    var player   = document.getElementById('ep-mini-player');
-    var audio    = document.getElementById('ep-mini-audio');
-    var closeBtn = document.getElementById('ep-mini-close');
-    var titleEl  = document.getElementById('ep-mini-title');
-
-    if (audio) audio.src = "https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/62507845/finale_intervista_cosmoitaliano.mp3";
-    if (titleEl) titleEl.textContent = document.querySelector("h1") ? document.querySelector("h1").textContent.trim() : document.title.split("—")[0].trim();
-    if (player) setTimeout(function(){ player.classList.add('visible'); }, 100);
-    if (audio)  setTimeout(function(){ audio.play().catch(function(){}); }, 3000);
-
-    if (closeBtn) {
-      closeBtn.addEventListener('click', function() {
-        if (audio) audio.pause();
-        if (player) player.classList.remove('visible');
-      });
-    }
-
-    // Linkify URLs in .description
-    function linkify(node) {
-      if (node.nodeType===3 && /https?:\/\//.test(node.textContent)) {
-        var frag = document.createDocumentFragment();
-        node.textContent.split(/(https?:\/\/[^\s<]+)/g).forEach(function(p) {
-          if (/^https?:\/\//.test(p)) {
-            var a=document.createElement('a'); a.href=p; a.textContent=p;
-            a.target='_blank'; a.rel='noopener'; a.className='ep-link';
-            frag.appendChild(a);
-          } else { frag.appendChild(document.createTextNode(p)); }
-        });
-        node.parentNode.replaceChild(frag, node);
-      } else if (node.nodeType===1 && node.nodeName!=='A' && node.nodeName!=='SCRIPT') {
-        Array.from(node.childNodes).forEach(linkify);
-      }
-    }
-    var desc = document.querySelector('.description');
-    if (desc) linkify(desc);
-
-    // Tag filtering on homepage when hashtag clicked
-    document.querySelectorAll('.ep-hashtag').forEach(function(a) {
-      a.addEventListener('click', function(e) {
-        var tag = a.getAttribute('data-tag');
-        if (tag) {
-          sessionStorage.setItem('ep_filter_tag', tag);
-        }
-      });
-    });
-  })();
-  </script>
 </body>
 </html>

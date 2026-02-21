@@ -21,6 +21,9 @@
     <img src='https://d3wo5wojvuv7l.cloudfront.net/t_rss_itunes_square_1400/images.spreaker.com/original/a75bb4547ab21931e3c121dc4f1f7f82.jpg' alt='Berlino Gratis: Rollerdisko!' class='ep-cover'>
     <h1>Berlino Gratis: Rollerdisko!</h1>
     <p class="date">Wed, 31 Jul 2024</p>
+    <div class="ep-play-row">
+      <audio id="ep-audio" controls src="https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/60871712/roller.mp3" preload="none" style="width:100%;max-width:560px;display:block;margin:0 var(--pad) 1.5rem;accent-color:#3b82f6;height:40px;"></audio>
+    </div>
     <div class="description">Vuoi imparare a pattinare, ma non hai un euro? Tutto a posto, devi solo sapere come fare. Stavolta andiamo a sfrecciare sulla dancefloor quasi gratis, o meglio, con un budget vicino allo zero. Se non ti va di spaccare il porcellino o ti hanno già bruciato tutte le carte di credito questo episodio è per te. Perché è vero, esistono città stupefacenti un po' ovunque, ma solo pochissime sono davvero low-cost o "kostenlos" come dicono qui. O come diremmo noi, alla portata di tuttə.<br /><br />🇩🇪 Gemeinschaftshaus Gropiusstadt, Tempelhof e SO36 - Berlin, Germania<br />
 <div class="ep-map-card"><iframe src="https://www.google.com/maps/d/embed?mid=1INrkQUKsl6vUpRNEFGYzstTcYDN7KR8&ll=47.11977157332829,10.717340199999995&z=5" loading="lazy" allowfullscreen></iframe></div><br />🟣 🟣 🟣 🟣<br />Per chiacchierare della prossima partenza o per salutarci:<br /><br />📸 INSTAGRAM 👉 ⁠⁠<a href="https://instagram.com/viaggio1x5%20%E2%81%A0%E2%81%A0" target="_blank" rel="noreferrer noopener">https://instagram.com/viaggio1x5 ⁠⁠</a><br /><br />📮 EMAIL 👉 ⁠⁠viaggio1x5@gmail.com ⁠⁠<br /><br />🌎 POSTI DA VEDERE A BERLINO 👉 ⁠⁠⁠<a href="https://www.google.com/maps/d/u/0/edit?mid=1INrkQUKsl6vUpRNEFGYzstTcYDN7KR8&amp;usp=sharing%E2%81%A0%E2%81%A0" target="_blank" rel="noreferrer noopener">https://www.google.com/maps/d/u/0/edit?mid=1INrkQUKsl6vUpRNEFGYzstTcYDN7KR8&amp;usp=sharing⁠⁠</a><br /><br />🟣 🟣 🟣 🟣</div>
     
@@ -64,61 +67,5 @@
     </div>
   </footer>
   </div>
-  <div class="mini-player" id="ep-mini-player">
-    <div class="mini-player__info">
-      <span class="mini-player__title" id="ep-mini-title"></span>
-      <button class="mini-player__close" id="ep-mini-close">&#x2715;</button>
-    </div>
-    <audio id="ep-mini-audio" controls></audio>
-  </div>
-  <script>
-  (function() {
-    var player   = document.getElementById('ep-mini-player');
-    var audio    = document.getElementById('ep-mini-audio');
-    var closeBtn = document.getElementById('ep-mini-close');
-    var titleEl  = document.getElementById('ep-mini-title');
-
-    if (audio) audio.src = "https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/60871712/roller.mp3";
-    if (titleEl) titleEl.textContent = document.querySelector("h1") ? document.querySelector("h1").textContent.trim() : document.title.split("—")[0].trim();
-    if (player) setTimeout(function(){ player.classList.add('visible'); }, 100);
-    if (audio)  setTimeout(function(){ audio.play().catch(function(){}); }, 3000);
-
-    if (closeBtn) {
-      closeBtn.addEventListener('click', function() {
-        if (audio) audio.pause();
-        if (player) player.classList.remove('visible');
-      });
-    }
-
-    // Linkify URLs in .description
-    function linkify(node) {
-      if (node.nodeType===3 && /https?:\/\//.test(node.textContent)) {
-        var frag = document.createDocumentFragment();
-        node.textContent.split(/(https?:\/\/[^\s<]+)/g).forEach(function(p) {
-          if (/^https?:\/\//.test(p)) {
-            var a=document.createElement('a'); a.href=p; a.textContent=p;
-            a.target='_blank'; a.rel='noopener'; a.className='ep-link';
-            frag.appendChild(a);
-          } else { frag.appendChild(document.createTextNode(p)); }
-        });
-        node.parentNode.replaceChild(frag, node);
-      } else if (node.nodeType===1 && node.nodeName!=='A' && node.nodeName!=='SCRIPT') {
-        Array.from(node.childNodes).forEach(linkify);
-      }
-    }
-    var desc = document.querySelector('.description');
-    if (desc) linkify(desc);
-
-    // Tag filtering on homepage when hashtag clicked
-    document.querySelectorAll('.ep-hashtag').forEach(function(a) {
-      a.addEventListener('click', function(e) {
-        var tag = a.getAttribute('data-tag');
-        if (tag) {
-          sessionStorage.setItem('ep_filter_tag', tag);
-        }
-      });
-    });
-  })();
-  </script>
 </body>
 </html>
