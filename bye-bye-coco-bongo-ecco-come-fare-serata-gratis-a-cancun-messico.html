@@ -28,7 +28,24 @@
     <nav class="topbar__nav">
       <a href="https://linktr.ee/viaggio1x5" target="_blank" rel="noopener">About</a>
     </nav>
+    <button class="topbar__hamburger" id="hamburger-btn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
+
+  <div id="mobile-menu">
+    <button class="mobile-menu__close" id="mobile-close">✕</button>
+      <a href="index.html#brasile" class="mobile-menu__tag">Brasile</a>
+      <a href="index.html#colombia" class="mobile-menu__tag">Colombia</a>
+      <a href="index.html#rica" class="mobile-menu__tag">Costarica</a>
+      <a href="index.html#panama" class="mobile-menu__tag">Panamá</a>
+      <a href="index.html#messico" class="mobile-menu__tag">Messico</a>
+      <a href="index.html#berlino" class="mobile-menu__tag">Berlino</a>
+      <a href="index.html#amsterdam" class="mobile-menu__tag">Amsterdam</a>
+      <a href="index.html#croazia" class="mobile-menu__tag">Croazia</a>
+      <a href="https://linktr.ee/viaggio1x5" target="_blank" rel="noopener" class="mobile-menu__about">About</a>
+  </div>
+
   <main>
     <img src='https://d3wo5wojvuv7l.cloudfront.net/t_rss_itunes_square_1400/images.spreaker.com/original/07a191bc2b083dbd02305be7d139a002.jpg' alt='Bye bye Coco Bongo: ecco come fare serata gratis a Cancun, Messico.' class='ep-cover'>
     <h1>Bye bye Coco Bongo: ecco come fare serata gratis a Cancun, Messico.</h1>
@@ -53,7 +70,7 @@
 </nav>
 
       <footer class="ep-footer">
-                <div class="ep-footer__copy">
+            <div class="ep-footer__copy">
       <span>© 2026 Caterina Finelli. Tutti i diritti riservati.</span>
     </div>
     <div class="ep-footer__social">
@@ -72,24 +89,41 @@
     </div>
     <audio id="ep-mini-audio" controls></audio>
   </div>
-  <script>
-  (function() {
-    var player   = document.getElementById('ep-mini-player');
-    var audio    = document.getElementById('ep-mini-audio');
-    var closeBtn = document.getElementById('ep-mini-close');
-    var titleEl  = document.getElementById('ep-mini-title');
-    if (audio) audio.src = "https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/60663455/spiaggianotte.mp3";
-    if (titleEl) titleEl.textContent = document.querySelector("h1") ? document.querySelector("h1").textContent.trim() : document.title.split("—")[0].trim();
-    if (player) setTimeout(function(){ player.classList.add('visible'); }, 100);
-    if (audio)  setTimeout(function(){ audio.play().catch(function(){}); }, 3000);
-    if (closeBtn) {
-      closeBtn.addEventListener('click', function() {
-        if (audio) audio.pause();
-        if (player) player.classList.remove('visible');
-      });
-    }
-  })();
-  </script>
+  
+<script id="hamburger-js">
+(function () {
+  var btn   = document.getElementById('hamburger-btn');
+  var menu  = document.getElementById('mobile-menu');
+  var close = document.getElementById('mobile-close');
+  if (!btn || !menu) return;
+
+  function openMenu() {
+    menu.classList.add('is-open');
+    btn.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu() {
+    menu.classList.remove('is-open');
+    btn.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+
+  btn.addEventListener('click', openMenu);
+  if (close) close.addEventListener('click', closeMenu);
+
+  /* Su index: le voci filtrano la lista */
+  menu.querySelectorAll('.mobile-menu__tag[data-tag]').forEach(function (el) {
+    el.addEventListener('click', function (e) {
+      e.preventDefault();
+      var hero = document.querySelector(
+        '.hero__controls .tag[data-tag="' + this.dataset.tag + '"]'
+      );
+      if (hero) hero.click();
+      closeMenu();
+    });
+  });
+})();
+</script>
 <!-- Statcounter -->
 <script type="text/javascript">
 var sc_project=13206144; 

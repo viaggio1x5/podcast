@@ -25,7 +25,24 @@
     <nav class="topbar__nav">
       <a href="https://linktr.ee/viaggio1x5" target="_blank" rel="noopener">About</a>
     </nav>
+    <button class="topbar__hamburger" id="hamburger-btn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
+
+  <div id="mobile-menu">
+    <button class="mobile-menu__close" id="mobile-close">✕</button>
+      <a href="#" class="mobile-menu__tag" data-tag="brasile">Brasile</a>
+      <a href="#" class="mobile-menu__tag" data-tag="colombia">Colombia</a>
+      <a href="#" class="mobile-menu__tag" data-tag="rica">Costarica</a>
+      <a href="#" class="mobile-menu__tag" data-tag="panama">Panamá</a>
+      <a href="#" class="mobile-menu__tag" data-tag="messico">Messico</a>
+      <a href="#" class="mobile-menu__tag" data-tag="berlino">Berlino</a>
+      <a href="#" class="mobile-menu__tag" data-tag="amsterdam">Amsterdam</a>
+      <a href="#" class="mobile-menu__tag" data-tag="croazia">Croazia</a>
+      <a href="https://linktr.ee/viaggio1x5" target="_blank" rel="noopener" class="mobile-menu__about">About</a>
+  </div>
+
 
 
   <section class="hero">
@@ -1017,47 +1034,41 @@
 
 
 
-<script>
+
+<script id="hamburger-js">
 (function () {
-  // Activate filter from URL hash on load (e.g. index.html#berlino)
-  var hash = window.location.hash.replace('#', '');
-  if (hash) {
-    window.addEventListener('DOMContentLoaded', function () {
-      var t = document.querySelector('.hero__controls .tag[data-tag="' + hash + '"]');
-      if (t) t.click();
-    });
+  var btn   = document.getElementById('hamburger-btn');
+  var menu  = document.getElementById('mobile-menu');
+  var close = document.getElementById('mobile-close');
+  if (!btn || !menu) return;
+
+  function openMenu() {
+    menu.classList.add('is-open');
+    btn.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu() {
+    menu.classList.remove('is-open');
+    btn.classList.remove('is-open');
+    document.body.style.overflow = '';
   }
 
-  var topbar      = document.getElementById('topbar');
-  var topbarPills = document.getElementById('topbar-pills');
-  var sentinel    = document.querySelector('.hero__controls');
+  btn.addEventListener('click', openMenu);
+  if (close) close.addEventListener('click', closeMenu);
 
-  function syncActive() {
-    var heroTags   = document.querySelectorAll('.hero__controls .tag');
-    var topbarTags = topbarPills.querySelectorAll('.tag');
-    heroTags.forEach(function (t, i) {
-      if (topbarTags[i]) topbarTags[i].classList.toggle('active', t.classList.contains('active'));
-    });
-  }
-
-  topbarPills.querySelectorAll('.tag').forEach(function (bt) {
-    bt.addEventListener('click', function (e) {
+  /* Su index: le voci filtrano la lista */
+  menu.querySelectorAll('.mobile-menu__tag[data-tag]').forEach(function (el) {
+    el.addEventListener('click', function (e) {
       e.preventDefault();
-      var hero = document.querySelector('.hero__controls .tag[data-tag="' + this.dataset.tag + '"]');
-      if (hero) { hero.click(); setTimeout(syncActive, 50); }
+      var hero = document.querySelector(
+        '.hero__controls .tag[data-tag="' + this.dataset.tag + '"]'
+      );
+      if (hero) hero.click();
+      closeMenu();
     });
   });
-
-  if (sentinel) {
-    var io = new IntersectionObserver(function (entries) {
-      var gone = !entries[0].isIntersecting;
-      topbarPills.classList.toggle('visible', gone);
-    }, { threshold: 0 });
-    io.observe(sentinel);
-  }
 })();
 </script>
-
 <!-- Statcounter -->
 <script type="text/javascript">
 var sc_project=13206144; 
