@@ -11,7 +11,7 @@
 <body>
 
   <div id="topbar">
-    <span class="topbar__logo">Viaggio a <strong>1.5x</strong> Podcast</span>
+    <span class="topbar__logo">Viaggio a <strong>1.5x</strong></span>
     <div class="topbar__pills" id="topbar-pills">
       <a href="#" class="tag" data-tag="brasile">Brasile</a>
       <a href="#" class="tag" data-tag="colombia">Colombia</a>
@@ -26,6 +26,13 @@
       <a href="mappa.html">🗺 Mappa</a>
       <a href="https://linktr.ee/viaggio1x5" target="_blank" rel="noopener">About</a>
     </nav>
+    <button class="topbar__globe" id="globe-btn" aria-label="Mappa" onclick="location.href='mappa.html'">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="2" y1="12" x2="22" y2="12"/>
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+      </svg>
+    </button>
     <button class="topbar__hamburger" id="hamburger-btn" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
@@ -980,6 +987,8 @@
           history.replaceState(null, '', window.location.pathname);
         } else {
           tag.classList.add('active');
+          // Sync all tags with same data-tag (hero + topbar)
+          document.querySelectorAll('.tag[data-tag="' + q + '"]').forEach(t => t.classList.add('active'));
           filterItems(true, q);
           history.replaceState(null, '', '#' + q);
         }
@@ -1030,6 +1039,33 @@
       miniAudio.pause();
       miniPlayer.classList.remove('visible');
     });
+
+    // ── STICKY TOPBAR PILLS (show when hero scrolls out of view) ──
+    const topbarPills = document.getElementById('topbar-pills');
+    const heroControls = document.querySelector('.hero__controls');
+    if (topbarPills && heroControls) {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            topbarPills.classList.remove('visible');
+          } else {
+            topbarPills.classList.add('visible');
+          }
+        },
+        { threshold: 0, rootMargin: '0px 0px 0px 0px' }
+      );
+      observer.observe(heroControls);
+
+      // Keep topbar pills in sync with hero pills active state
+      document.querySelectorAll('.topbar__pills .tag').forEach(tTag => {
+        tTag.addEventListener('click', e => {
+          e.preventDefault();
+          const q = tTag.dataset.tag;
+          const heroTag = document.querySelector('.hero__controls .tag[data-tag="' + q + '"]');
+          if (heroTag) heroTag.click();
+        });
+      });
+    }
   </script>
 
 

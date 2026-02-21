@@ -47,16 +47,37 @@
     }
     #topbar a.home strong { font-weight: 800; }
     #topbar .spacer { flex: 1; }
-    #topbar a.back-home {
-      font-size: 0.72rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 0.06em;
-      color: var(--muted); text-decoration: none;
-      border: 1px solid var(--border); border-radius: 999px;
-      padding: 0.35rem 0.9rem;
-      transition: color .15s, border-color .15s;
+
+    /* ── TOPBAR LEGEND ──────────────────────────────────── */
+    #topbar-legend {
+      display: flex; align-items: center;
+      gap: 0.25rem;
+    }
+    .tleg-btn {
+      display: flex; align-items: center; gap: 0.4rem;
+      padding: 0.45rem 1.15rem;
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      background: #fff;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 0.95rem; font-weight: 600;
+      color: #444;
+      transition: background .15s, border-color .15s, color .15s, opacity .2s;
       white-space: nowrap;
     }
-    #topbar a.back-home:hover { color: var(--accent); border-color: var(--accent); }
+    .tleg-btn:hover { border-color: #bbb; }
+    .tleg-btn.active { background: #fff; color: var(--text); opacity: 1; }
+    .tleg-btn.dimmed { background: #fafafa; color: #bbb; border-color: #eee; opacity: 0.7; }
+    .tleg-dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      border: 2px solid #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,.25);
+      flex-shrink: 0;
+    }
+    .tleg-dot.blue   { background: var(--accent); box-shadow: 0 1px 4px rgba(42,94,255,.5); }
+    .tleg-dot.orange { background: var(--orange); box-shadow: 0 1px 4px rgba(224,106,0,.5); }
+    .tleg-btn.dimmed .tleg-dot { opacity: 0.35; }
 
     /* ── LAYOUT ─────────────────────────────────────────── */
     #layout {
@@ -70,46 +91,6 @@
       top: 0; left: 0; right: 0; bottom: 0;
       z-index: 1;
     }
-
-    /* ── LEGEND PANEL (bottom-left, Leaflet-style) ──────── */
-    #legend-panel {
-      position: absolute;
-      bottom: 30px; left: 10px;
-      z-index: 500;
-      background: #fff;
-      border-radius: 4px;
-      box-shadow: 0 1px 5px rgba(0,0,0,.4);
-      padding: 0;
-      overflow: hidden;
-    }
-    .legend-btn {
-      display: flex; align-items: center; gap: 0.55rem;
-      padding: 0.55rem 0.85rem;
-      cursor: pointer;
-      user-select: none;
-      font-family: var(--font);
-      font-size: 0.75rem; font-weight: 600;
-      color: #444;
-      background: #fff;
-      border: none; width: 100%;
-      text-align: left;
-      transition: background .12s, color .12s;
-      border-bottom: 1px solid #e8e8e8;
-    }
-    .legend-btn:last-child { border-bottom: none; }
-    .legend-btn:hover { background: #f5f5f5; }
-    .legend-btn.active { color: var(--text); }
-    .legend-btn.dimmed { color: #bbb; }
-    .legend-dot {
-      width: 12px; height: 12px; border-radius: 50%;
-      border: 2.5px solid #fff;
-      box-shadow: 0 1px 3px rgba(0,0,0,.3);
-      flex-shrink: 0;
-      transition: opacity .2s;
-    }
-    .legend-dot.blue   { background: var(--accent); box-shadow: 0 1px 4px rgba(42,94,255,.5); }
-    .legend-dot.orange { background: var(--orange); box-shadow: 0 1px 4px rgba(224,106,0,.5); }
-    .legend-btn.dimmed .legend-dot { opacity: 0.3; }
 
     /* ── SIDE PANEL ─────────────────────────────────────── */
     #panel {
@@ -242,7 +223,7 @@
         border-left: none; border-top: 1px solid var(--border);
       }
       #panel.hidden { transform: translateY(100%); }
-      #legend-panel { bottom: 16px; left: 10px; }
+      #panel-list .ep-card__title { font-size: 1rem; line-height: 1.45; }
     }
 
     /* ── MARKERS ────────────────────────────────────────── */
@@ -288,27 +269,25 @@
 
 <!-- TOPBAR -->
 <div id="topbar">
-  <a href="index.html" class="home">Viaggio a <strong>1.5x</strong> Podcast</a>
+  <a href="index.html" class="home">Viaggio a <strong>1.5x</strong></a>
   <div class="spacer"></div>
-  <a href="index.html" class="back-home">← Lista episodi</a>
+  <!-- Legend lives in topbar on all screen sizes -->
+  <div id="topbar-legend">
+    <button class="tleg-btn active" id="btn-city" onclick="toggleLayer('city')">
+      <div class="tleg-dot blue"></div>
+      <span>Città</span>
+    </button>
+    <button class="tleg-btn active" id="btn-country" onclick="toggleLayer('country')">
+      <div class="tleg-dot orange"></div>
+      <span>Paesi</span>
+    </button>
+  </div>
 </div>
 
 <!-- LAYOUT -->
 <div id="layout">
   <div id="map"></div>
   <div id="map-copyright">© 2026 Caterina Finelli. Tutti i diritti riservati.</div>
-
-  <!-- LEGEND PANEL -->
-  <div id="legend-panel">
-    <button class="legend-btn active" id="btn-city" onclick="toggleLayer('city')">
-      <div class="legend-dot blue"></div>
-      <span>Città</span>
-    </button>
-    <button class="legend-btn active" id="btn-country" onclick="toggleLayer('country')">
-      <div class="legend-dot orange"></div>
-      <span>Paese</span>
-    </button>
-  </div>
 
   <!-- SIDE PANEL -->
   <div id="panel" class="hidden">
@@ -505,6 +484,37 @@ COUNTRIES.forEach(country => {
 
 map.on('click', () => panel.classList.add('hidden'));
 
+// ── FRAGMENT DEEP LINK (from episode pages) ───────────────────
+const COUNTRY_KEY_MAP = {
+  brasile:   'Brasile',
+  colombia:  'Colombia',
+  messico:   'Messico',
+  berlino:   'Germania',
+  amsterdam: 'Olanda',
+  croazia:   'Croazia',
+  rica:      'Costa Rica',
+  panama:    'Panamà',
+};
+
+function handleFragment() {
+  const hash = window.location.hash;
+  if (!hash) return;
+  const match = hash.match(/^#country=(.+)$/);
+  if (!match) return;
+  const key = decodeURIComponent(match[1]).toLowerCase();
+  const countryName = COUNTRY_KEY_MAP[key];
+  if (!countryName) return;
+  const country = COUNTRIES.find(c => c.name === countryName);
+  if (!country) return;
+  const eps = countryEpisodes[countryName] || [];
+  if (!eps.length) return;
+  setTimeout(() => {
+    map.setView([country.lat, country.lon], 4, { animate: false });
+    openPanel(eps, country.flag + ' ' + countryName, true);
+  }, 300);
+}
+handleFragment();
+
 // ── LEGEND TOGGLE ────────────────────────────────────────────
 const state = { city: true, country: true };
 
@@ -546,8 +556,8 @@ function applyVisibility() {
   });
 
   // Legend button states
-  btnCity.className    = 'legend-btn ' + (state.city    ? 'active' : 'dimmed');
-  btnCountry.className = 'legend-btn ' + (state.country ? 'active' : 'dimmed');
+  btnCity.className    = 'tleg-btn ' + (state.city    ? 'active' : 'dimmed');
+  btnCountry.className = 'tleg-btn ' + (state.country ? 'active' : 'dimmed');
 }
 </script>
 </body>
