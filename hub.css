@@ -178,6 +178,23 @@
   font-size: 0.88rem;
 }
 
+@media (max-width: 700px) {
+  .hero__hub-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 1rem;
+    padding-right: 0;
+    gap: 0.35rem;
+  }
+  .hero__hub-nav::-webkit-scrollbar { display: none; }
+  .hero__hub-nav .tag {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+}
+
 /* ── Episode page: match hub page content width ─────────────── */
 main.ep-page-main > h1,
 main.ep-page-main > .date,
