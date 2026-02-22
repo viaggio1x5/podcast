@@ -10,8 +10,6 @@
 }
 
 .hub-hero__inner {
-  max-width: 860px;
-  margin: 0 auto;
   padding: clamp(2.5rem, 6vh, 5rem) var(--pad) clamp(2rem, 4vh, 3rem);
 }
 
@@ -82,8 +80,6 @@
 
 /* ── Hub Main content ───────────────────────────────────── */
 .hub-main {
-  max-width: 860px;
-  margin: 0 auto;
   padding: 0 var(--pad) 6rem;
   flex: 1;
 }
@@ -163,4 +159,38 @@
 @media (max-width: 640px) {
   .hub-hero__title { font-size: clamp(2.2rem, 10vw, 3rem); }
   .hub-subnav .tag { font-size: 0.78rem; padding: 0.3rem 0.75rem; }
+}
+
+/* episode page margins handled in new block below */
+
+
+/* ── Homepage: hub nav pills (replaces hero__controls) ──────── */
+.hero__hub-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0 var(--pad) 1.5rem;
+}
+
+.hero__hub-nav .tag {
+  font-size: 0.88rem;
+}
+
+/* ── Episode page: match hub page content width ─────────────── */
+main.ep-page-main > h1,
+main.ep-page-main > .date,
+main.ep-page-main > .description,
+main.ep-page-main > .ep-play-row,
+main.ep-page-main > .ep-location,
+main.ep-page-main > .ep-social-row,
+main.ep-page-main > .ep-nav,
+main.ep-page-main > .hub-backlink {
+  padding-left: var(--pad);
+  padding-right: var(--pad);
+  box-sizing: border-box;
+}
+
+main.ep-page-main > .transcript {
+  padding-left: var(--pad);
+  padding-right: var(--pad);
 }
