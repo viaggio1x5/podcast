@@ -151,6 +151,35 @@ body { padding-top: 56px; }
   font-family: var(--font-title);
 }
 
+/* ── HUB NAV (carousel orizzontale) ───────────────────── */
+.hero__hub-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 600px) {
+  .hero__hub-nav {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+    /* estendi fino ai bordi del viewport su mobile */
+    margin-left: calc(-1 * var(--pad));
+    margin-right: calc(-1 * var(--pad));
+    padding-left: var(--pad);
+    padding-right: var(--pad);
+  }
+  .hero__hub-nav::-webkit-scrollbar { display: none; }
+  .hero__hub-nav .tag {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+}
+
 /* ── SEARCH ────────────────────────────────────────────── */
 .search-wrap {
   position: relative;
