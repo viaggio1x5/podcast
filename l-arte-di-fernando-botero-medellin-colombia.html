@@ -144,13 +144,13 @@ var sc_security="2a704921";
   var audioSrc = 'https://dts.podtrac.com/redirect.mp3/api.spreaker.com/download/episode/59153953/boterozz.mp3';
   var title    = document.querySelector('h1') ? document.querySelector('h1').textContent.trim() : document.title;
 
-  // Auto-show and play after 600ms (same UX as homepage hover)
+  // Auto-show and play after 3000ms (3 seconds after page load)
   setTimeout(function() {
     miniAudio.src = audioSrc;
     miniTitle.textContent = title;
     miniPlayer.classList.add('visible');
     miniAudio.play().catch(function(){});
-  }, 600);
+  }, 3000);
 
   miniClose.addEventListener('click', function() {
     miniAudio.pause();

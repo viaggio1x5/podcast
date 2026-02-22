@@ -10,7 +10,7 @@
 }
 
 .hub-hero__inner {
-  padding: clamp(2.5rem, 6vh, 5rem) var(--pad) clamp(2rem, 4vh, 3rem);
+  padding: clamp(2.5rem, 6vh, 5rem) var(--pad) clamp(2rem, 4vh, 3rem) calc(var(--pad) * 2);
 }
 
 .hub-breadcrumb {
@@ -80,7 +80,7 @@
 
 /* ── Hub Main content ───────────────────────────────────── */
 .hub-main {
-  padding: 0 var(--pad) 6rem;
+  padding: 0 var(--pad) 6rem calc(var(--pad) * 2);
   flex: 1;
 }
 
@@ -159,6 +159,8 @@
 @media (max-width: 640px) {
   .hub-hero__title { font-size: clamp(2.2rem, 10vw, 3rem); }
   .hub-subnav .tag { font-size: 0.78rem; padding: 0.3rem 0.75rem; }
+  .hub-hero__inner { padding-left: var(--pad); }
+  .hub-main { padding-left: var(--pad); }
 }
 
 /* episode page margins handled in new block below */
@@ -169,7 +171,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  padding: 0 var(--pad) 1.5rem;
+  padding: 0 var(--pad) 1.5rem 0;
 }
 
 .hero__hub-nav .tag {
