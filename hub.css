@@ -1,0 +1,166 @@
+/* ══════════════════════════════════════════════════════════
+   HUB PAGE STYLES — Viaggio a 1.5x
+   Extends style.css (must be loaded after)
+══════════════════════════════════════════════════════════ */
+
+/* ── Hub Hero ──────────────────────────────────────────── */
+.hub-hero {
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(160deg, #f8faff 0%, #ffffff 60%);
+}
+
+.hub-hero__inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 6vh, 5rem) var(--pad) clamp(2rem, 4vh, 3rem);
+}
+
+.hub-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 1.8rem;
+}
+.hub-breadcrumb a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.hub-breadcrumb a:hover { color: var(--accent); }
+
+.hub-hero__flag {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  line-height: 1;
+  margin-bottom: 0.6rem;
+}
+
+.hub-hero__title {
+  font-family: var(--font-title);
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.hub-hero__tagline {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin-bottom: 1.2rem;
+}
+
+.hub-hero__intro {
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  line-height: 1.7;
+  color: var(--text);
+  max-width: 680px;
+  margin-bottom: 1.8rem;
+  font-weight: 400;
+}
+
+/* ── Sub-nav pills ──────────────────────────────────────── */
+.hub-subnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.hub-subnav .tag {
+  font-size: 0.82rem;
+  padding: 0.35rem 0.9rem;
+  text-decoration: none;
+  scroll-behavior: smooth;
+}
+
+/* ── Hub Main content ───────────────────────────────────── */
+.hub-main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 var(--pad) 6rem;
+  flex: 1;
+}
+
+/* ── Hub Sections (sub-destinations) ───────────────────── */
+.hub-section {
+  padding-top: 2.5rem;
+}
+
+.hub-section__header {
+  padding-bottom: 0.8rem;
+  border-bottom: 2px solid var(--accent);
+  margin-bottom: 0;
+}
+
+.hub-section__title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.hub-section__count {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-light);
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  letter-spacing: 0.04em;
+}
+
+.hub-section__desc {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.55;
+  margin-top: 0.5rem;
+  max-width: 620px;
+}
+
+/* ── Inherit ep-list from style.css ────────────────────── */
+/* ep-list styles are already in style.css — no duplication needed */
+
+/* ── Spoke backlink (added to episode pages) ────────────── */
+.hub-backlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  margin-bottom: 1rem;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.hub-backlink:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+/* ── Topbar home link ───────────────────────────────────── */
+.topbar__home {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ── Mobile adjustments ─────────────────────────────────── */
+@media (max-width: 640px) {
+  .hub-hero__title { font-size: clamp(2.2rem, 10vw, 3rem); }
+  .hub-subnav .tag { font-size: 0.78rem; padding: 0.3rem 0.75rem; }
+}
